@@ -98,18 +98,18 @@
 
 
 
-  <meta name="description" content="gc 调整方式 如果Full GC频繁，加大JVM堆内存，设置  -Xmx 启动时分配的内存  -Xms  运行过程中分配的最大内存 如果Yong GC频繁，加大新生代的比例，如果使用的是CMS垃圾收集器，必要时，可以关闭survive区，避免survive区和Eden区来回拷贝 设置 -Xmn 年轻代大小  内存大,可以尝试G1垃圾收集器  gc 日志查询 jstat -gc pid  | 列名">
+  <meta name="description" content="gc 调整方式 如果Full GC频繁，加大JVM堆内存，设置  -Xmx 启动时分配的内存  -Xms  运行过程中分配的最大内存 如果Yong GC频繁，加大新生代的比例，如果使用的是CMS垃圾收集器，必要时，可以关闭survive区，避免survive区和Eden区来回拷贝 设置 -Xmn 年轻代大小  内存大,可以尝试G1垃圾收集器  gc 日志查询 jstat -gc pid">
 <meta name="keywords" content="优化">
 <meta property="og:type" content="article">
 <meta property="og:title" content="优化 JVM GC 配置">
 <meta property="og:url" content="http://sonxy.com/2019/03/18/jvm-gc/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="gc 调整方式 如果Full GC频繁，加大JVM堆内存，设置  -Xmx 启动时分配的内存  -Xms  运行过程中分配的最大内存 如果Yong GC频繁，加大新生代的比例，如果使用的是CMS垃圾收集器，必要时，可以关闭survive区，避免survive区和Eden区来回拷贝 设置 -Xmn 年轻代大小  内存大,可以尝试G1垃圾收集器  gc 日志查询 jstat -gc pid  | 列名">
+<meta property="og:description" content="gc 调整方式 如果Full GC频繁，加大JVM堆内存，设置  -Xmx 启动时分配的内存  -Xms  运行过程中分配的最大内存 如果Yong GC频繁，加大新生代的比例，如果使用的是CMS垃圾收集器，必要时，可以关闭survive区，避免survive区和Eden区来回拷贝 设置 -Xmn 年轻代大小  内存大,可以尝试G1垃圾收集器  gc 日志查询 jstat -gc pid">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-03-18T08:29:43.859Z">
+<meta property="og:updated_time" content="2019-03-18T08:41:13.424Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="优化 JVM GC 配置">
-<meta name="twitter:description" content="gc 调整方式 如果Full GC频繁，加大JVM堆内存，设置  -Xmx 启动时分配的内存  -Xms  运行过程中分配的最大内存 如果Yong GC频繁，加大新生代的比例，如果使用的是CMS垃圾收集器，必要时，可以关闭survive区，避免survive区和Eden区来回拷贝 设置 -Xmn 年轻代大小  内存大,可以尝试G1垃圾收集器  gc 日志查询 jstat -gc pid  | 列名">
+<meta name="twitter:description" content="gc 调整方式 如果Full GC频繁，加大JVM堆内存，设置  -Xmx 启动时分配的内存  -Xms  运行过程中分配的最大内存 如果Yong GC频繁，加大新生代的比例，如果使用的是CMS垃圾收集器，必要时，可以关闭survive区，避免survive区和Eden区来回拷贝 设置 -Xmn 年轻代大小  内存大,可以尝试G1垃圾收集器  gc 日志查询 jstat -gc pid">
 
 
 
@@ -334,7 +334,7 @@
                 
               
 
-              <time title="Created: 2019-03-18 16:28:43 / Modified: 16:29:43" itemprop="dateCreated datePublished" datetime="2019-03-18T16:28:43+08:00">2019-03-18</time>
+              <time title="Created: 2019-03-18 16:28:43 / Modified: 16:41:13" itemprop="dateCreated datePublished" datetime="2019-03-18T16:28:43+08:00">2019-03-18</time>
             
 
             
@@ -379,15 +379,131 @@
 <li>内存大,可以尝试G1垃圾收集器</li>
 </ol>
 <h3 id="gc-日志查询"><a href="#gc-日志查询" class="headerlink" title="gc 日志查询"></a>gc 日志查询</h3><ol>
-<li><p>jstat -gc pid </p>
-<p>| 列名 | 说明                                                         |<br>| —- | :———————————————————– |<br>| S0C  | 新生代中Survivor space中S0当前容量的大小（KB）               |<br>| S1C  | 新生代中Survivor space中S1当前容量的大小（KB）               |<br>| S0U  | 新生代中Survivor space中S0容量使用的大小（KB）               |<br>| S1U  | 新生代中Survivor space中S1容量使用的大小（KB）               |<br>| EC   | Eden space当前容量的大小（KB）                               |<br>| EC   | Eden space容量使用的大小（KB）                               |<br>| OC   | Old space当前容量的大小（KB）                                |<br>| OU   | Old space使用容量的大小（KB）                                |<br>| PC   | Permanent space当前容量的大小（KB）                          |<br>| PU   | Permanent space使用容量的大小（KB）                          |<br>| YGC  | 从应用程序启动到采样时发生 Young GC 的次数                   |<br>| YGCT | 从应用程序启动到采样时 Young GC 所用的时间(秒)               |<br>| FGC  | 从应用程序启动到采样时发生 Full GC 的次数                    |<br>| FGCT | 从应用程序启动到采样时 Full GC 所用的时间(秒)                |<br>| GCT  | T从应用程序启动到采样时用于垃圾回收的总时间(单位秒)，它的值等于YGC+FGC |</p>
-</li>
+<li>jstat -gc pid </li>
 </ol>
+<table>
+<thead>
+<tr>
+<th>列名</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S0C</td>
+<td style="text-align:left">新生代中Survivor space中S0当前容量的大小（KB）</td>
+</tr>
+<tr>
+<td>S1C</td>
+<td style="text-align:left">新生代中Survivor space中S1当前容量的大小（KB）</td>
+</tr>
+<tr>
+<td>S0U</td>
+<td style="text-align:left">新生代中Survivor space中S0容量使用的大小（KB）</td>
+</tr>
+<tr>
+<td>S1U</td>
+<td style="text-align:left">新生代中Survivor space中S1容量使用的大小（KB）</td>
+</tr>
+<tr>
+<td>EC</td>
+<td style="text-align:left">Eden space当前容量的大小（KB）</td>
+</tr>
+<tr>
+<td>EC</td>
+<td style="text-align:left">Eden space容量使用的大小（KB）</td>
+</tr>
+<tr>
+<td>OC</td>
+<td style="text-align:left">Old space当前容量的大小（KB）</td>
+</tr>
+<tr>
+<td>OU</td>
+<td style="text-align:left">Old space使用容量的大小（KB）</td>
+</tr>
+<tr>
+<td>PC</td>
+<td style="text-align:left">Permanent space当前容量的大小（KB）</td>
+</tr>
+<tr>
+<td>PU</td>
+<td style="text-align:left">Permanent space使用容量的大小（KB）</td>
+</tr>
+<tr>
+<td>YGC</td>
+<td style="text-align:left">从应用程序启动到采样时发生 Young GC 的次数</td>
+</tr>
+<tr>
+<td>YGCT</td>
+<td style="text-align:left">从应用程序启动到采样时 Young GC 所用的时间(秒)</td>
+</tr>
+<tr>
+<td>FGC</td>
+<td style="text-align:left">从应用程序启动到采样时发生 Full GC 的次数</td>
+</tr>
+<tr>
+<td>FGCT</td>
+<td style="text-align:left">从应用程序启动到采样时 Full GC 所用的时间(秒)</td>
+</tr>
+<tr>
+<td>GCT</td>
+<td style="text-align:left">T从应用程序启动到采样时用于垃圾回收的总时间(单位秒)，它的值等于YGC+FGC</td>
+</tr>
+</tbody>
+</table>
 <ol start="2">
-<li><p>jstat -gcutil pid 10s</p>
-<p>| 列名 | 说明                                                         |<br>| —- | ———————————————————— |<br>| S0   | Heap上的 Survivor space 0 区已使用空间的百分比               |<br>| S1   | Heap上的 Survivor space 1 区已使用空间的百分比               |<br>| E    | Heap上的 Eden space 区已使用空间的百分比                     |<br>| O    | Heap上的 Old space 区已使用空间的百分比                      |<br>| P    | Perm space 区已使用空间的百分比                              |<br>| YGC  | 从应用程序启动到采样时发生 Young GC 的次数                   |<br>| YGCT | 从应用程序启动到采样时 Young GC 所用的时间(秒)               |<br>| FGC  | 从应用程序启动到采样时发生 Full GC 的次数                    |<br>| FGCT | 从应用程序启动到采样时 Full GC 所用的时间(秒)                |<br>| GCT  | T从应用程序启动到采样时用于垃圾回收的总时间(单位秒)，它的值等于YGC+FGC |</p>
-</li>
+<li>jstat -gcutil pid 10s</li>
 </ol>
+<table>
+<thead>
+<tr>
+<th>列名</th>
+<th style="text-align:left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S0</td>
+<td style="text-align:left">Heap上的 Survivor space 0 区已使用空间的百分比</td>
+</tr>
+<tr>
+<td>S1</td>
+<td style="text-align:left">Heap上的 Survivor space 1 区已使用空间的百分比</td>
+</tr>
+<tr>
+<td>E</td>
+<td style="text-align:left">Heap上的 Eden space 区已使用空间的百分比</td>
+</tr>
+<tr>
+<td>O</td>
+<td style="text-align:left">Heap上的 Old space 区已使用空间的百分比</td>
+</tr>
+<tr>
+<td>P</td>
+<td style="text-align:left">Perm space 区已使用空间的百分比</td>
+</tr>
+<tr>
+<td>YGC</td>
+<td style="text-align:left">从应用程序启动到采样时发生 Young GC 的次数</td>
+</tr>
+<tr>
+<td>YGCT</td>
+<td style="text-align:left">从应用程序启动到采样时 Young GC 所用的时间(秒)</td>
+</tr>
+<tr>
+<td>FGC</td>
+<td style="text-align:left">从应用程序启动到采样时发生 Full GC 的次数</td>
+</tr>
+<tr>
+<td>FGCT</td>
+<td style="text-align:left">从应用程序启动到采样时 Full GC 所用的时间(秒)</td>
+</tr>
+<tr>
+<td>GCT</td>
+<td style="text-align:left">T从应用程序启动到采样时用于垃圾回收的总时间(单位秒)，它的值等于YGC+FGC</td>
+</tr>
+</tbody>
+</table>
 
       
     </div>
