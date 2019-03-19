@@ -366,7 +366,7 @@
                 
               
 
-              <time title="Created: 2019-03-19 09:42:03 / Modified: 09:43:42" itemprop="dateCreated datePublished" datetime="2019-03-19T09:42:03+08:00">2019-03-19</time>
+              <time title="Created: 2019-03-19 09:42:03 / Modified: 09:45:50" itemprop="dateCreated datePublished" datetime="2019-03-19T09:42:03+08:00">2019-03-19</time>
             
 
             
@@ -454,8 +454,9 @@
 <ol start="6">
 <li><p>创建账号,授权</p>
  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl add_user admin admin</span><br><span class="line">rabbitmqctl set_user_tags admin administrator</span><br><span class="line">rabbitmqctl list_users </span><br><span class="line">rabbitmqctl set_permissions -p "/" admin ".*" ".*" ".*"</span><br></pre></td></tr></table></figure>
-<p> ​    </p>
-<h2 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h2></li>
+</li>
+</ol>
+<h2 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h2><ol>
 <li><p>处理 .erlang.cookie</p>
  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cp .erlang.cookie /rgec/app/rabbitmq-node2/</span><br><span class="line">cp .erlang.cookie /rgec/app/rabbitmq-node3/</span><br><span class="line">chmod 400 /rgec/app/rabbitmq-node2/.erlang.cookie</span><br><span class="line">chmod 400 /rgec/app/rabbitmq-node3/.erlang.cookie</span><br></pre></td></tr></table></figure>
 </li>
