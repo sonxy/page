@@ -98,25 +98,25 @@
 
 
 
-  <meta name="description" content="gc 调整方式 如果Full GC频繁，加大JVM堆内存，设置  -Xmx 启动时分配的内存  -Xms  运行过程中分配的最大内存 如果Yong GC频繁，加大新生代的比例，如果使用的是CMS垃圾收集器，必要时，可以关闭survive区，避免survive区和Eden区来回拷贝 设置 -Xmn 年轻代大小  内存大,可以尝试G1垃圾收集器  gc 日志查询 jstat -gc pid">
-<meta name="keywords" content="优化">
+  <meta name="description" content="单点 安装依赖  1234yum -y install make gcc gcc-c++ kernel-devel m4 ncurses-devel openssl-devel unixODBC unixODBC-devel httpd python-simplejsonyum -y install epel-release   # 之后再执行yum -y install socat，有先后顺序">
+<meta name="keywords" content="RabbitMQ">
 <meta property="og:type" content="article">
-<meta property="og:title" content="优化 JVM GC 配置">
-<meta property="og:url" content="http://sonxy.com/2019/03/18/jvm-gc/index.html">
+<meta property="og:title" content="RabbitMQ 单点,集群">
+<meta property="og:url" content="http://sonxy.com/2019/03/19/rabbitmq-install/index.html">
 <meta property="og:site_name" content="w&#39;s blog">
-<meta property="og:description" content="gc 调整方式 如果Full GC频繁，加大JVM堆内存，设置  -Xmx 启动时分配的内存  -Xms  运行过程中分配的最大内存 如果Yong GC频繁，加大新生代的比例，如果使用的是CMS垃圾收集器，必要时，可以关闭survive区，避免survive区和Eden区来回拷贝 设置 -Xmn 年轻代大小  内存大,可以尝试G1垃圾收集器  gc 日志查询 jstat -gc pid">
+<meta property="og:description" content="单点 安装依赖  1234yum -y install make gcc gcc-c++ kernel-devel m4 ncurses-devel openssl-devel unixODBC unixODBC-devel httpd python-simplejsonyum -y install epel-release   # 之后再执行yum -y install socat，有先后顺序">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-03-18T09:24:09.181Z">
+<meta property="og:updated_time" content="2019-03-19T01:43:42.164Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="优化 JVM GC 配置">
-<meta name="twitter:description" content="gc 调整方式 如果Full GC频繁，加大JVM堆内存，设置  -Xmx 启动时分配的内存  -Xms  运行过程中分配的最大内存 如果Yong GC频繁，加大新生代的比例，如果使用的是CMS垃圾收集器，必要时，可以关闭survive区，避免survive区和Eden区来回拷贝 设置 -Xmn 年轻代大小  内存大,可以尝试G1垃圾收集器  gc 日志查询 jstat -gc pid">
+<meta name="twitter:title" content="RabbitMQ 单点,集群">
+<meta name="twitter:description" content="单点 安装依赖  1234yum -y install make gcc gcc-c++ kernel-devel m4 ncurses-devel openssl-devel unixODBC unixODBC-devel httpd python-simplejsonyum -y install epel-release   # 之后再执行yum -y install socat，有先后顺序">
 
 
 
 
 
 
-  <link rel="canonical" href="http://sonxy.com/2019/03/18/jvm-gc/">
+  <link rel="canonical" href="http://sonxy.com/2019/03/19/rabbitmq-install/">
 
 
 
@@ -126,7 +126,7 @@
   };
 </script>
 
-  <title>优化 JVM GC 配置 | w's blog</title>
+  <title>RabbitMQ 单点,集群 | w's blog</title>
   
 
 
@@ -325,7 +325,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://sonxy.com/page/2019/03/18/jvm-gc/">
+    <link itemprop="mainEntityOfPage" href="http://sonxy.com/page/2019/03/19/rabbitmq-install/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="doupi">
@@ -342,7 +342,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">优化 JVM GC 配置
+          <h1 class="post-title" itemprop="name headline">RabbitMQ 单点,集群
 
               
             
@@ -368,7 +368,7 @@
                 
               
 
-              <time title="Created: 2019-03-18 16:28:43 / Modified: 17:24:09" itemprop="dateCreated datePublished" datetime="2019-03-18T16:28:43+08:00">2019-03-18</time>
+              <time title="Created: 2019-03-19 09:42:03 / Modified: 09:43:42" itemprop="dateCreated datePublished" datetime="2019-03-19T09:42:03+08:00">2019-03-19</time>
             
 
             
@@ -390,7 +390,7 @@
                 <span class="post-meta-item-text">In</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/page/categories/优化/" itemprop="url" rel="index"><span itemprop="name">优化</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/page/categories/Install/" itemprop="url" rel="index"><span itemprop="name">Install</span></a></span>
 
                 
                 
@@ -425,138 +425,68 @@
       
 
       
-        <h3 id="gc-调整方式"><a href="#gc-调整方式" class="headerlink" title="gc 调整方式"></a>gc 调整方式</h3><ol>
-<li>如果Full GC频繁，加大JVM堆内存，设置  <strong>-Xmx 启动时分配的内存  -Xms  运行过程中分配的最大内存</strong></li>
-<li>如果Yong GC频繁，加大新生代的比例，如果使用的是CMS垃圾收集器，必要时，可以关闭survive区，避免survive区和Eden区来回拷贝 设置 <strong>-Xmn 年轻代大小 </strong></li>
-<li>内存大,可以尝试G1垃圾收集器</li>
+        <h2 id="单点"><a href="#单点" class="headerlink" title="单点"></a>单点</h2><ol>
+<li><p>安装依赖</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">yum -y install make gcc gcc-c++ kernel-devel m4 ncurses-devel openssl-devel unixODBC unixODBC-devel httpd python-simplejson</span><br><span class="line"></span><br><span class="line">yum -y install epel-release   # 之后再执行yum -y install socat，有先后顺序  </span><br><span class="line">yum -y install socat**</span><br></pre></td></tr></table></figure>
+</li>
 </ol>
-<h3 id="gc-日志查询"><a href="#gc-日志查询" class="headerlink" title="gc 日志查询"></a>gc 日志查询</h3><ol>
-<li>jstat -gc pid </li>
-</ol>
-<table>
-<thead>
-<tr>
-<th>列名</th>
-<th style="text-align:left">说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>S0C</td>
-<td style="text-align:left">新生代中Survivor space中S0当前容量的大小（KB）</td>
-</tr>
-<tr>
-<td>S1C</td>
-<td style="text-align:left">新生代中Survivor space中S1当前容量的大小（KB）</td>
-</tr>
-<tr>
-<td>S0U</td>
-<td style="text-align:left">新生代中Survivor space中S0容量使用的大小（KB）</td>
-</tr>
-<tr>
-<td>S1U</td>
-<td style="text-align:left">新生代中Survivor space中S1容量使用的大小（KB）</td>
-</tr>
-<tr>
-<td>EC</td>
-<td style="text-align:left">Eden space当前容量的大小（KB）</td>
-</tr>
-<tr>
-<td>EC</td>
-<td style="text-align:left">Eden space容量使用的大小（KB）</td>
-</tr>
-<tr>
-<td>OC</td>
-<td style="text-align:left">Old space当前容量的大小（KB）</td>
-</tr>
-<tr>
-<td>OU</td>
-<td style="text-align:left">Old space使用容量的大小（KB）</td>
-</tr>
-<tr>
-<td>PC</td>
-<td style="text-align:left">Permanent space当前容量的大小（KB）</td>
-</tr>
-<tr>
-<td>PU</td>
-<td style="text-align:left">Permanent space使用容量的大小（KB）</td>
-</tr>
-<tr>
-<td>YGC</td>
-<td style="text-align:left">从应用程序启动到采样时发生 Young GC 的次数</td>
-</tr>
-<tr>
-<td>YGCT</td>
-<td style="text-align:left">从应用程序启动到采样时 Young GC 所用的时间(秒)</td>
-</tr>
-<tr>
-<td>FGC</td>
-<td style="text-align:left">从应用程序启动到采样时发生 Full GC 的次数</td>
-</tr>
-<tr>
-<td>FGCT</td>
-<td style="text-align:left">从应用程序启动到采样时 Full GC 所用的时间(秒)</td>
-</tr>
-<tr>
-<td>GCT</td>
-<td style="text-align:left">T从应用程序启动到采样时用于垃圾回收的总时间(单位秒)，它的值等于YGC+FGC</td>
-</tr>
-</tbody>
-</table>
 <ol start="2">
-<li>jstat -gcutil pid 10s</li>
+<li><p>安装erlang</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wget http://erlang.org/download/otp_src_19.3.tar.gz</span><br><span class="line">tar xf otp_src_19.3.tar.gz</span><br><span class="line">cd otp_src_19.3/</span><br><span class="line">./configure  --prefix=/usr/local/erlang --enable-smp-support  --enable-threads  --enable-sctp --enable-kernel-poll --enable-hipe  --with-ssl --without-javac</span><br><span class="line">make &amp;&amp; make install   #这一步等待时间较长</span><br></pre></td></tr></table></figure>
+<p> ​    </p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/profile</span><br><span class="line">export PATH=$PATH:/usr/local/erlang/bin</span><br><span class="line">source /etc/profile</span><br><span class="line">erl</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装 RabbiMQ</p>
+<p> …</p>
+<pre><code>开放端口或者关闭防火墙
+</code></pre></li>
 </ol>
-<table>
-<thead>
-<tr>
-<th>列名</th>
-<th style="text-align:left">说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>S0</td>
-<td style="text-align:left">Heap上的 Survivor space 0 区已使用空间的百分比</td>
-</tr>
-<tr>
-<td>S1</td>
-<td style="text-align:left">Heap上的 Survivor space 1 区已使用空间的百分比</td>
-</tr>
-<tr>
-<td>E</td>
-<td style="text-align:left">Heap上的 Eden space 区已使用空间的百分比</td>
-</tr>
-<tr>
-<td>O</td>
-<td style="text-align:left">Heap上的 Old space 区已使用空间的百分比</td>
-</tr>
-<tr>
-<td>P</td>
-<td style="text-align:left">Perm space 区已使用空间的百分比</td>
-</tr>
-<tr>
-<td>YGC</td>
-<td style="text-align:left">从应用程序启动到采样时发生 Young GC 的次数</td>
-</tr>
-<tr>
-<td>YGCT</td>
-<td style="text-align:left">从应用程序启动到采样时 Young GC 所用的时间(秒)</td>
-</tr>
-<tr>
-<td>FGC</td>
-<td style="text-align:left">从应用程序启动到采样时发生 Full GC 的次数</td>
-</tr>
-<tr>
-<td>FGCT</td>
-<td style="text-align:left">从应用程序启动到采样时 Full GC 所用的时间(秒)</td>
-</tr>
-<tr>
-<td>GCT</td>
-<td style="text-align:left">T从应用程序启动到采样时用于垃圾回收的总时间(单位秒)，它的值等于YGC+FGC</td>
-</tr>
-</tbody>
-</table>
+<ol start="4">
+<li><p>启动 RabbimQ</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service rabbitmq-server start</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol start="5">
+<li><p>安装插件</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rabbitmq-plugins enable rabbitmq_management</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol start="6">
+<li><p>创建账号,授权</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl add_user admin admin</span><br><span class="line">rabbitmqctl set_user_tags admin administrator</span><br><span class="line">rabbitmqctl list_users </span><br><span class="line">rabbitmqctl set_permissions -p "/" admin ".*" ".*" ".*"</span><br></pre></td></tr></table></figure>
+<p> ​    </p>
+<h2 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h2></li>
+<li><p>处理 .erlang.cookie</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cp .erlang.cookie /rgec/app/rabbitmq-node2/</span><br><span class="line">cp .erlang.cookie /rgec/app/rabbitmq-node3/</span><br><span class="line">chmod 400 /rgec/app/rabbitmq-node2/.erlang.cookie</span><br><span class="line">chmod 400 /rgec/app/rabbitmq-node3/.erlang.cookie</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol start="2">
+<li><p>启动 node1</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/rgec/app/rabbitmq-node1/sbin/rabbitmq-server start &amp;</span><br></pre></td></tr></table></figure>
+<p> node2和node3用 rabbitmq-server -detached命令启动，因为修改了原来的cookie文件，使用service rabbitmq-server start启动，会报错，无法启动：</p>
+<p> 先kill掉从节点node2和node3节点的rabbitmq服务进程，再分别重新启动：</p>
+<p> 启动从node节点：</p>
+ <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/rgec/app/rabbitmq-node2/sbin/rabbitmq-server start -detached</span><br><span class="line">/rgec/app/rabbitmq-node3/sbin/rabbitmq-server start -detached</span><br></pre></td></tr></table></figure>
+<p> 从节点加入到集群</p>
+<pre><code>./rabbitmqctl stop_app 
+./rabbitmqctl reset 
+./rabbitmqctl join_cluster rabbit@node1   # rabbit@node1里面的node1是主节点的主机名，注意修改
+./rabbitmqctl start_app
 
+/rgec/app/rabbitmq-node1/sbin/rabbitmqctl cluster_status
+</code></pre></li>
+</ol>
+<h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><h5 id="Reset"><a href="#Reset" class="headerlink" title="Reset"></a>Reset</h5><p>将RabbitMQ节点返回到它的初始状态。从其所属的任何集群中移除节点，从管理数据库(如配置的用户和vhost)中删除所有数据，并删除所有持久消息。要使RESET和FORITE成功，RabbitMQ应用程序必须已经停止，例如使用STOP_APP。</p>
+<h5 id="start-app"><a href="#start-app" class="headerlink" title="start_app"></a>start_app</h5><p>启动RabbitMQ应用程序。此命令通常在执行其他需要停止RabbitMQ应用程序的管理操作后运行，例如重置。</p>
+<h5 id="stop"><a href="#stop" class="headerlink" title="stop"></a>stop</h5><p>停止运行RabbitMQ的Erlang节点。要重新启动节点，请按照安装指南中关于“运行服务器”的说明进行操作。<br>如果指定了PID_file，也会等待那里指定的进程终止。</p>
+<h5 id="stop-app"><a href="#stop-app" class="headerlink" title="stop_app"></a>stop_app</h5><p>停止RabbitMQ应用程序，使Erlang节点继续运行。此命令通常在执行其他需要停止RabbitMQ应用程序的管理操作(例如重置)之前运行。</p>
+<h2 id="镜像队列的设置"><a href="#镜像队列的设置" class="headerlink" title="镜像队列的设置"></a>镜像队列的设置</h2><p>rabbitmqctl set_policy [-p Vhost] Name Pattern Definition [Priority]</p>
+<p>-p Vhost： 可选参数，针对指定vhost下的queue进行设置<br>Name: policy的名称<br>Pattern: ^所有,^queue的匹配模式(正则表达式)<br>Definition：镜像定义，包括三个部分ha-mode, ha-params, ha-sync-mode<br>    ha-mode:指明镜像队列的模式，有效值为 all/exactly/nodes<br>        all：表示在集群中所有的节点上进行镜像<br>        exactly：表示在指定个数的节点上进行镜像，节点的个数由ha-params指定<br>        nodes：表示在指定的节点上进行镜像，节点名称通过ha-params指定<br>    ha-params：ha-mode模式需要用到的参数<br>    ha-sync-mode：进行队列中消息的同步方式，有效值为automatic和manual<br>priority：可选参数，policy的优先级</p>
+<p><strong>命令方式</strong></p>
+<pre><code>rabbitmqctl set_policy --priority 0 --apply-to queues mirror_queue &quot;^&quot; &apos;{&quot;ha-mode&quot;:&quot;exactly&quot;,&quot;ha-params&quot;:2,&quot;ha-sync-mode&quot;:&quot;automatic&quot;}&apos;
+</code></pre><p><strong>web 方式</strong></p>
+<pre><code>http://192.168.90.82:18222/#/policies
+</code></pre>
       
     </div>
 
@@ -579,7 +509,7 @@
       
         <div class="post-tags">
           
-            <a href="/page/tags/优化/" rel="tag"># 优化</a>
+            <a href="/page/tags/RabbitMQ/" rel="tag"># RabbitMQ</a>
           
         </div>
       
@@ -592,15 +522,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/page/2019/03/18/jvm-gc/" rel="next" title="优化 JVM GC 配置">
+                <i class="fa fa-chevron-left"></i> 优化 JVM GC 配置
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/page/2019/03/19/rabbitmq-install/" rel="prev" title="RabbitMQ 单点,集群">
-                RabbitMQ 单点,集群 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -741,7 +671,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#gc-调整方式"><span class="nav-number">1.</span> <span class="nav-text">gc 调整方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gc-日志查询"><span class="nav-number">2.</span> <span class="nav-text">gc 日志查询</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#单点"><span class="nav-number">1.</span> <span class="nav-text">单点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集群"><span class="nav-number">2.</span> <span class="nav-text">集群</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令"><span class="nav-number">3.</span> <span class="nav-text">命令</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Reset"><span class="nav-number">3.0.0.1.</span> <span class="nav-text">Reset</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#start-app"><span class="nav-number">3.0.0.2.</span> <span class="nav-text">start_app</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#stop"><span class="nav-number">3.0.0.3.</span> <span class="nav-text">stop</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#stop-app"><span class="nav-number">3.0.0.4.</span> <span class="nav-text">stop_app</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#镜像队列的设置"><span class="nav-number">4.</span> <span class="nav-text">镜像队列的设置</span></a></li></div>
             
 
           </div>
