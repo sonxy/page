@@ -341,7 +341,7 @@
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/page/2019/03/19/rabbitmq-install/" class="post-title-link" itemprop="url">RabbitMQ 单点,集群</a>
+                <a href="/page/2019/03/19/rabbitmq-install/" class="post-title-link" itemprop="url">RabbitMQ 单点/集群 安装配置</a>
               
             
           </h1>
@@ -366,7 +366,7 @@
                 
               
 
-              <time title="Created: 2019-03-19 09:42:03 / Modified: 09:45:50" itemprop="dateCreated datePublished" datetime="2019-03-19T09:42:03+08:00">2019-03-19</time>
+              <time title="Created: 2019-03-19 09:42:03 / Modified: 09:53:59" itemprop="dateCreated datePublished" datetime="2019-03-19T09:42:03+08:00">2019-03-19</time>
             
 
             
@@ -477,17 +477,16 @@
 /rgec/app/rabbitmq-node1/sbin/rabbitmqctl cluster_status
 </code></pre></li>
 </ol>
-<h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><h5 id="Reset"><a href="#Reset" class="headerlink" title="Reset"></a>Reset</h5><p>将RabbitMQ节点返回到它的初始状态。从其所属的任何集群中移除节点，从管理数据库(如配置的用户和vhost)中删除所有数据，并删除所有持久消息。要使RESET和FORITE成功，RabbitMQ应用程序必须已经停止，例如使用STOP_APP。</p>
-<h5 id="start-app"><a href="#start-app" class="headerlink" title="start_app"></a>start_app</h5><p>启动RabbitMQ应用程序。此命令通常在执行其他需要停止RabbitMQ应用程序的管理操作后运行，例如重置。</p>
-<h5 id="stop"><a href="#stop" class="headerlink" title="stop"></a>stop</h5><p>停止运行RabbitMQ的Erlang节点。要重新启动节点，请按照安装指南中关于“运行服务器”的说明进行操作。<br>如果指定了PID_file，也会等待那里指定的进程终止。</p>
-<h5 id="stop-app"><a href="#stop-app" class="headerlink" title="stop_app"></a>stop_app</h5><p>停止RabbitMQ应用程序，使Erlang节点继续运行。此命令通常在执行其他需要停止RabbitMQ应用程序的管理操作(例如重置)之前运行。</p>
-<h2 id="镜像队列的设置"><a href="#镜像队列的设置" class="headerlink" title="镜像队列的设置"></a>镜像队列的设置</h2><p>rabbitmqctl set_policy [-p Vhost] Name Pattern Definition [Priority]</p>
-<p>-p Vhost： 可选参数，针对指定vhost下的queue进行设置<br>Name: policy的名称<br>Pattern: ^所有,^queue的匹配模式(正则表达式)<br>Definition：镜像定义，包括三个部分ha-mode, ha-params, ha-sync-mode<br>    ha-mode:指明镜像队列的模式，有效值为 all/exactly/nodes<br>        all：表示在集群中所有的节点上进行镜像<br>        exactly：表示在指定个数的节点上进行镜像，节点的个数由ha-params指定<br>        nodes：表示在指定的节点上进行镜像，节点名称通过ha-params指定<br>    ha-params：ha-mode模式需要用到的参数<br>    ha-sync-mode：进行队列中消息的同步方式，有效值为automatic和manual<br>priority：可选参数，policy的优先级</p>
+<h2 id="镜像队列的设置"><a href="#镜像队列的设置" class="headerlink" title="镜像队列的设置"></a>镜像队列的设置</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">rabbitmqctl set_policy [-p Vhost] Name Pattern Definition [Priority]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">-p Vhost： 可选参数，针对指定vhost下的queue进行设置</span><br><span class="line">Name: policy的名称</span><br><span class="line">Pattern: ^所有,^queue的匹配模式(正则表达式)</span><br><span class="line">Definition：镜像定义，包括三个部分ha-mode, ha-params, ha-sync-mode</span><br><span class="line">    ha-mode:指明镜像队列的模式，有效值为 all/exactly/nodes</span><br><span class="line">        all：表示在集群中所有的节点上进行镜像</span><br><span class="line">        exactly：表示在指定个数的节点上进行镜像，节点的个数由ha-params指定</span><br><span class="line">        nodes：表示在指定的节点上进行镜像，节点名称通过ha-params指定</span><br><span class="line">    ha-params：ha-mode模式需要用到的参数</span><br><span class="line">    ha-sync-mode：进行队列中消息的同步方式，有效值为automatic和manual</span><br><span class="line">priority：可选参数，policy的优先级</span><br></pre></td></tr></table></figure>
 <p><strong>命令方式</strong></p>
 <pre><code>rabbitmqctl set_policy --priority 0 --apply-to queues mirror_queue &quot;^&quot; &apos;{&quot;ha-mode&quot;:&quot;exactly&quot;,&quot;ha-params&quot;:2,&quot;ha-sync-mode&quot;:&quot;automatic&quot;}&apos;
 </code></pre><p><strong>web 方式</strong></p>
 <pre><code>http://192.168.90.82:18222/#/policies
-</code></pre>
+</code></pre><h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><h5 id="Reset"><a href="#Reset" class="headerlink" title="Reset"></a>Reset</h5><p>将RabbitMQ节点返回到它的初始状态。从其所属的任何集群中移除节点，从管理数据库(如配置的用户和vhost)中删除所有数据，并删除所有持久消息。要使RESET和FORITE成功，RabbitMQ应用程序必须已经停止，例如使用STOP_APP。</p>
+<h5 id="start-app"><a href="#start-app" class="headerlink" title="start_app"></a>start_app</h5><p>启动RabbitMQ应用程序。此命令通常在执行其他需要停止RabbitMQ应用程序的管理操作后运行，例如重置。</p>
+<h5 id="stop"><a href="#stop" class="headerlink" title="stop"></a>stop</h5><p>停止运行RabbitMQ的Erlang节点。要重新启动节点，请按照安装指南中关于“运行服务器”的说明进行操作。<br>如果指定了PID_file，也会等待那里指定的进程终止。</p>
+<h5 id="stop-app"><a href="#stop-app" class="headerlink" title="stop_app"></a>stop_app</h5><p>停止RabbitMQ应用程序，使Erlang节点继续运行。此命令通常在执行其他需要停止RabbitMQ应用程序的管理操作(例如重置)之前运行。</p>
+
           
         
       
