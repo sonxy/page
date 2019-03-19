@@ -98,21 +98,25 @@
 
 
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="tags">
-<meta property="og:url" content="http://sonxy.com/tags/index.html">
+  <meta name="description" content="镜像模式只保证高可用,不保证高性能,一主两从,消息由主节点接收,分发到从节点备份.只有主节点失效,会切换到从节点.  宕机从节点 不影响发送和接收 宕机主节点 不影响发送,但影响接收,主机上的 consumer 会失联,本次修改 rabbitmq-service-consumer 支持消费者重连 正在执行消费时,主节点宕机,消息消费成功,但是 ack 会失败,消息会重新到队列中.这种情况会有重复消">
+<meta name="keywords" content="RabbitMQ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rabbitmq镜像模式,测试情况">
+<meta property="og:url" content="http://sonxy.com/2019/03/19/rabbitmq-test/index.html">
 <meta property="og:site_name" content="w&#39;s blog">
+<meta property="og:description" content="镜像模式只保证高可用,不保证高性能,一主两从,消息由主节点接收,分发到从节点备份.只有主节点失效,会切换到从节点.  宕机从节点 不影响发送和接收 宕机主节点 不影响发送,但影响接收,主机上的 consumer 会失联,本次修改 rabbitmq-service-consumer 支持消费者重连 正在执行消费时,主节点宕机,消息消费成功,但是 ack 会失败,消息会重新到队列中.这种情况会有重复消">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-03-18T09:22:21.479Z">
+<meta property="og:updated_time" content="2019-03-19T02:12:08.964Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="tags">
+<meta name="twitter:title" content="rabbitmq镜像模式,测试情况">
+<meta name="twitter:description" content="镜像模式只保证高可用,不保证高性能,一主两从,消息由主节点接收,分发到从节点备份.只有主节点失效,会切换到从节点.  宕机从节点 不影响发送和接收 宕机主节点 不影响发送,但影响接收,主机上的 consumer 会失联,本次修改 rabbitmq-service-consumer 支持消费者重连 正在执行消费时,主节点宕机,消息消费成功,但是 ack 会失败,消息会重新到队列中.这种情况会有重复消">
 
 
 
 
 
 
-  <link rel="canonical" href="http://sonxy.com/tags/">
+  <link rel="canonical" href="http://sonxy.com/2019/03/19/rabbitmq-test/">
 
 
 
@@ -122,7 +126,7 @@
   };
 </script>
 
-  <title>tags | w's blog</title>
+  <title>rabbitmq镜像模式,测试情况 | w's blog</title>
   
 
 
@@ -225,7 +229,7 @@
         
         
           
-          <li class="menu-item menu-item-tags menu-item-active">
+          <li class="menu-item menu-item-tags">
 
     
     
@@ -281,25 +285,6 @@
   
     
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
   
 
   
@@ -326,45 +311,188 @@
 
   <div id="posts" class="posts-expand">
     
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sonxy.com/page/2019/03/19/rabbitmq-test/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="doupi">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/page/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="w's blog">
+    </span>
+
     
-    
-    <div class="post-block page">
       <header class="post-header">
 
-<h1 class="post-title" itemprop="name headline">tags
-
-</h1>
-
-<div class="post-meta">
-  
-  
-
-
-
-</div>
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
         
         
+          <h1 class="post-title" itemprop="name headline">rabbitmq镜像模式,测试情况
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-03-19 10:10:37 / Modified: 10:12:08" itemprop="dateCreated datePublished" datetime="2019-03-19T10:10:37+08:00">2019-03-19</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
           
-        
-      </div>
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/page/categories/Install/" itemprop="url" rel="index"><span itemprop="name">Install</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
       
+
+      
+        <p><strong>镜像模式只保证高可用,不保证高性能,一主两从,消息由主节点接收,分发到从节点备份.只有主节点失效,会切换到从节点.</strong></p>
+<ol>
+<li>宕机从节点 不影响发送和接收</li>
+<li>宕机主节点 不影响发送,但影响接收,主机上的 consumer 会失联,本次修改 rabbitmq-service-consumer 支持消费者重连</li>
+<li>正在执行消费时,主节点宕机,消息消费成功,但是 ack 会失败,消息会重新到队列中.这种情况会有重复消费的情况.</li>
+<li>宕机节点 上线不影响发送和接收</li>
+<li>宕机节点重启动,需要手动同步</li>
+</ol>
+
       
     </div>
-    
-
-
 
     
+
     
     
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/page/tags/RabbitMQ/" rel="tag"># RabbitMQ</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/page/2019/03/19/rabbitmq-install/" rel="next" title="RabbitMQ 单点/集群 安装配置">
+                <i class="fa fa-chevron-left"></i> RabbitMQ 单点/集群 安装配置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
   </div>
 
 

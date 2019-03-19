@@ -106,7 +106,7 @@
 <meta property="og:site_name" content="w&#39;s blog">
 <meta property="og:description" content="单点 安装依赖  1234yum -y install make gcc gcc-c++ kernel-devel m4 ncurses-devel openssl-devel unixODBC unixODBC-devel httpd python-simplejsonyum -y install epel-release   # 之后再执行yum -y install socat，有先后顺序">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-03-19T01:53:59.151Z">
+<meta property="og:updated_time" content="2019-03-19T02:05:02.326Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RabbitMQ 单点&#x2F;集群 安装配置">
 <meta name="twitter:description" content="单点 安装依赖  1234yum -y install make gcc gcc-c++ kernel-devel m4 ncurses-devel openssl-devel unixODBC unixODBC-devel httpd python-simplejsonyum -y install epel-release   # 之后再执行yum -y install socat，有先后顺序">
@@ -368,7 +368,7 @@
                 
               
 
-              <time title="Created: 2019-03-19 09:42:03 / Modified: 09:53:59" itemprop="dateCreated datePublished" datetime="2019-03-19T09:42:03+08:00">2019-03-19</time>
+              <time title="Created: 2019-03-19 09:42:03 / Modified: 10:05:02" itemprop="dateCreated datePublished" datetime="2019-03-19T09:42:03+08:00">2019-03-19</time>
             
 
             
@@ -482,10 +482,10 @@
 <pre><code>rabbitmqctl set_policy --priority 0 --apply-to queues mirror_queue &quot;^&quot; &apos;{&quot;ha-mode&quot;:&quot;exactly&quot;,&quot;ha-params&quot;:2,&quot;ha-sync-mode&quot;:&quot;automatic&quot;}&apos;
 </code></pre><p><strong>web 方式</strong></p>
 <pre><code>http://192.168.90.82:18222/#/policies
-</code></pre><h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><h5 id="Reset"><a href="#Reset" class="headerlink" title="Reset"></a>Reset</h5><p>将RabbitMQ节点返回到它的初始状态。从其所属的任何集群中移除节点，从管理数据库(如配置的用户和vhost)中删除所有数据，并删除所有持久消息。要使RESET和FORITE成功，RabbitMQ应用程序必须已经停止，例如使用STOP_APP。</p>
-<h5 id="start-app"><a href="#start-app" class="headerlink" title="start_app"></a>start_app</h5><p>启动RabbitMQ应用程序。此命令通常在执行其他需要停止RabbitMQ应用程序的管理操作后运行，例如重置。</p>
-<h5 id="stop"><a href="#stop" class="headerlink" title="stop"></a>stop</h5><p>停止运行RabbitMQ的Erlang节点。要重新启动节点，请按照安装指南中关于“运行服务器”的说明进行操作。<br>如果指定了PID_file，也会等待那里指定的进程终止。</p>
-<h5 id="stop-app"><a href="#stop-app" class="headerlink" title="stop_app"></a>stop_app</h5><p>停止RabbitMQ应用程序，使Erlang节点继续运行。此命令通常在执行其他需要停止RabbitMQ应用程序的管理操作(例如重置)之前运行。</p>
+</code></pre><h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><h5 id="Reset"><a href="#Reset" class="headerlink" title="Reset"></a>Reset</h5><p>  将RabbitMQ节点返回到它的初始状态。从其所属的任何集群中移除节点，从管理数据库(如配置的用户和vhost)中删除所有数据，并删除所有持久消息。要使RESET和FORITE成功，RabbitMQ应用程序必须已经停止，例如使用STOP_APP。</p>
+<h5 id="start-app"><a href="#start-app" class="headerlink" title="start_app"></a>start_app</h5><p>  启动RabbitMQ应用程序。此命令通常在执行其他需要停止RabbitMQ应用程序的管理操作后运行，例如重置。</p>
+<h5 id="stop"><a href="#stop" class="headerlink" title="stop"></a>stop</h5><p>  停止运行RabbitMQ的Erlang节点。要重新启动节点，请按照安装指南中关于“运行服务器”的说明进行操作。<br>  如果指定了PID_file，也会等待那里指定的进程终止。</p>
+<h5 id="stop-app"><a href="#stop-app" class="headerlink" title="stop_app"></a>stop_app</h5><p>  停止RabbitMQ应用程序，使Erlang节点继续运行。此命令通常在执行其他需要停止RabbitMQ应用程序的管理操作(例如重置)之前运行。</p>
 
       
     </div>
@@ -531,6 +531,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/page/2019/03/19/rabbitmq-test/" rel="prev" title="rabbitmq镜像模式,测试情况">
+                rabbitmq镜像模式,测试情况 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -599,7 +603,7 @@
                 
                   <a href="/page/archives/">
                 
-                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-count">3</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>

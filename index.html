@@ -321,6 +321,174 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://sonxy.com/page/2019/03/19/rabbitmq-test/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="doupi">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/page/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="w's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/page/2019/03/19/rabbitmq-test/" class="post-title-link" itemprop="url">rabbitmq镜像模式,测试情况</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-03-19 10:10:37 / Modified: 10:12:08" itemprop="dateCreated datePublished" datetime="2019-03-19T10:10:37+08:00">2019-03-19</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/page/categories/Install/" itemprop="url" rel="index"><span itemprop="name">Install</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><strong>镜像模式只保证高可用,不保证高性能,一主两从,消息由主节点接收,分发到从节点备份.只有主节点失效,会切换到从节点.</strong></p>
+<ol>
+<li>宕机从节点 不影响发送和接收</li>
+<li>宕机主节点 不影响发送,但影响接收,主机上的 consumer 会失联,本次修改 rabbitmq-service-consumer 支持消费者重连</li>
+<li>正在执行消费时,主节点宕机,消息消费成功,但是 ack 会失败,消息会重新到队列中.这种情况会有重复消费的情况.</li>
+<li>宕机节点 上线不影响发送和接收</li>
+<li>宕机节点重启动,需要手动同步</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://sonxy.com/page/2019/03/19/rabbitmq-install/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -366,7 +534,7 @@
                 
               
 
-              <time title="Created: 2019-03-19 09:42:03 / Modified: 09:53:59" itemprop="dateCreated datePublished" datetime="2019-03-19T09:42:03+08:00">2019-03-19</time>
+              <time title="Created: 2019-03-19 09:42:03 / Modified: 10:05:02" itemprop="dateCreated datePublished" datetime="2019-03-19T09:42:03+08:00">2019-03-19</time>
             
 
             
@@ -482,10 +650,10 @@
 <pre><code>rabbitmqctl set_policy --priority 0 --apply-to queues mirror_queue &quot;^&quot; &apos;{&quot;ha-mode&quot;:&quot;exactly&quot;,&quot;ha-params&quot;:2,&quot;ha-sync-mode&quot;:&quot;automatic&quot;}&apos;
 </code></pre><p><strong>web 方式</strong></p>
 <pre><code>http://192.168.90.82:18222/#/policies
-</code></pre><h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><h5 id="Reset"><a href="#Reset" class="headerlink" title="Reset"></a>Reset</h5><p>将RabbitMQ节点返回到它的初始状态。从其所属的任何集群中移除节点，从管理数据库(如配置的用户和vhost)中删除所有数据，并删除所有持久消息。要使RESET和FORITE成功，RabbitMQ应用程序必须已经停止，例如使用STOP_APP。</p>
-<h5 id="start-app"><a href="#start-app" class="headerlink" title="start_app"></a>start_app</h5><p>启动RabbitMQ应用程序。此命令通常在执行其他需要停止RabbitMQ应用程序的管理操作后运行，例如重置。</p>
-<h5 id="stop"><a href="#stop" class="headerlink" title="stop"></a>stop</h5><p>停止运行RabbitMQ的Erlang节点。要重新启动节点，请按照安装指南中关于“运行服务器”的说明进行操作。<br>如果指定了PID_file，也会等待那里指定的进程终止。</p>
-<h5 id="stop-app"><a href="#stop-app" class="headerlink" title="stop_app"></a>stop_app</h5><p>停止RabbitMQ应用程序，使Erlang节点继续运行。此命令通常在执行其他需要停止RabbitMQ应用程序的管理操作(例如重置)之前运行。</p>
+</code></pre><h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><h5 id="Reset"><a href="#Reset" class="headerlink" title="Reset"></a>Reset</h5><p>  将RabbitMQ节点返回到它的初始状态。从其所属的任何集群中移除节点，从管理数据库(如配置的用户和vhost)中删除所有数据，并删除所有持久消息。要使RESET和FORITE成功，RabbitMQ应用程序必须已经停止，例如使用STOP_APP。</p>
+<h5 id="start-app"><a href="#start-app" class="headerlink" title="start_app"></a>start_app</h5><p>  启动RabbitMQ应用程序。此命令通常在执行其他需要停止RabbitMQ应用程序的管理操作后运行，例如重置。</p>
+<h5 id="stop"><a href="#stop" class="headerlink" title="stop"></a>stop</h5><p>  停止运行RabbitMQ的Erlang节点。要重新启动节点，请按照安装指南中关于“运行服务器”的说明进行操作。<br>  如果指定了PID_file，也会等待那里指定的进程终止。</p>
+<h5 id="stop-app"><a href="#stop-app" class="headerlink" title="stop_app"></a>stop_app</h5><p>  停止RabbitMQ应用程序，使Erlang节点继续运行。此命令通常在执行其他需要停止RabbitMQ应用程序的管理操作(例如重置)之前运行。</p>
 
           
         
@@ -860,7 +1028,7 @@
                 
                   <a href="/page/archives/">
                 
-                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-count">3</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
