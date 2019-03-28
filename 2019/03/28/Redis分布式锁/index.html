@@ -98,25 +98,25 @@
 
 
 
-  <meta name="description" content="gc 调整方式 如果Full GC频繁，加大JVM堆内存，设置  -Xmx 启动时分配的内存  -Xms  运行过程中分配的最大内存 如果Yong GC频繁，加大新生代的比例，如果使用的是CMS垃圾收集器，必要时，可以关闭survive区，避免survive区和Eden区来回拷贝 设置 -Xmn 年轻代大小  内存大,可以尝试G1垃圾收集器  gc 日志查询 jstat -gc pid">
-<meta name="keywords" content="优化">
+  <meta name="description" content="##Redis分布式锁-实现方式 基础实现`public boolean lock(String lockName){      String lockKey = RedisKey.generate(&amp;quot;redis&amp;quot;, &amp;quot;lock&amp;quot;, lockName);      Long setnx = redisService.setnx(lockKey, LOCK_F">
+<meta name="keywords" content="redis">
 <meta property="og:type" content="article">
-<meta property="og:title" content="优化 JVM GC 配置">
-<meta property="og:url" content="http://sonxy.com/2019/03/18/jvm-gc/index.html">
+<meta property="og:title" content="Redis分布式锁">
+<meta property="og:url" content="http://sonxy.com/2019/03/28/Redis分布式锁/index.html">
 <meta property="og:site_name" content="w&#39;s blog">
-<meta property="og:description" content="gc 调整方式 如果Full GC频繁，加大JVM堆内存，设置  -Xmx 启动时分配的内存  -Xms  运行过程中分配的最大内存 如果Yong GC频繁，加大新生代的比例，如果使用的是CMS垃圾收集器，必要时，可以关闭survive区，避免survive区和Eden区来回拷贝 设置 -Xmn 年轻代大小  内存大,可以尝试G1垃圾收集器  gc 日志查询 jstat -gc pid">
+<meta property="og:description" content="##Redis分布式锁-实现方式 基础实现`public boolean lock(String lockName){      String lockKey = RedisKey.generate(&amp;quot;redis&amp;quot;, &amp;quot;lock&amp;quot;, lockName);      Long setnx = redisService.setnx(lockKey, LOCK_F">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-03-19T02:41:40.656Z">
+<meta property="og:updated_time" content="2019-03-28T05:51:36.207Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="优化 JVM GC 配置">
-<meta name="twitter:description" content="gc 调整方式 如果Full GC频繁，加大JVM堆内存，设置  -Xmx 启动时分配的内存  -Xms  运行过程中分配的最大内存 如果Yong GC频繁，加大新生代的比例，如果使用的是CMS垃圾收集器，必要时，可以关闭survive区，避免survive区和Eden区来回拷贝 设置 -Xmn 年轻代大小  内存大,可以尝试G1垃圾收集器  gc 日志查询 jstat -gc pid">
+<meta name="twitter:title" content="Redis分布式锁">
+<meta name="twitter:description" content="##Redis分布式锁-实现方式 基础实现`public boolean lock(String lockName){      String lockKey = RedisKey.generate(&amp;quot;redis&amp;quot;, &amp;quot;lock&amp;quot;, lockName);      Long setnx = redisService.setnx(lockKey, LOCK_F">
 
 
 
 
 
 
-  <link rel="canonical" href="http://sonxy.com/2019/03/18/jvm-gc/">
+  <link rel="canonical" href="http://sonxy.com/2019/03/28/Redis分布式锁/">
 
 
 
@@ -126,7 +126,7 @@
   };
 </script>
 
-  <title>优化 JVM GC 配置 | w's blog</title>
+  <title>Redis分布式锁 | w's blog</title>
   
 
 
@@ -325,7 +325,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://sonxy.com/page/2019/03/18/jvm-gc/">
+    <link itemprop="mainEntityOfPage" href="http://sonxy.com/page/2019/03/28/Redis分布式锁/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="doupi">
@@ -342,7 +342,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">优化 JVM GC 配置
+          <h1 class="post-title" itemprop="name headline">Redis分布式锁
 
               
             
@@ -368,46 +368,16 @@
                 
               
 
-              <time title="Created: 2019-03-18 16:28:43" itemprop="dateCreated datePublished" datetime="2019-03-18T16:28:43+08:00">2019-03-18</time>
+              <time title="Created: 2019-03-28 13:48:30 / Modified: 13:51:36" itemprop="dateCreated datePublished" datetime="2019-03-28T13:48:30+08:00">2019-03-28</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-03-19 10:41:40" itemprop="dateModified" datetime="2019-03-19T10:41:40+08:00">2019-03-19</time>
               
             
           </span>
 
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/page/categories/优化/" itemprop="url" rel="index"><span itemprop="name">优化</span></a></span>
-
-                
-                
-              
-            </span>
           
 
           
@@ -437,138 +407,178 @@
       
 
       
-        <h3 id="gc-调整方式"><a href="#gc-调整方式" class="headerlink" title="gc 调整方式"></a>gc 调整方式</h3><ol>
-<li>如果Full GC频繁，加大JVM堆内存，设置  <strong>-Xmx 启动时分配的内存  -Xms  运行过程中分配的最大内存</strong></li>
-<li>如果Yong GC频繁，加大新生代的比例，如果使用的是CMS垃圾收集器，必要时，可以关闭survive区，避免survive区和Eden区来回拷贝 设置 <strong>-Xmn 年轻代大小 </strong></li>
-<li>内存大,可以尝试G1垃圾收集器</li>
-</ol>
-<h3 id="gc-日志查询"><a href="#gc-日志查询" class="headerlink" title="gc 日志查询"></a>gc 日志查询</h3><ol>
-<li>jstat -gc pid </li>
-</ol>
-<table>
-<thead>
-<tr>
-<th>列名</th>
-<th style="text-align:left">说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>S0C</td>
-<td style="text-align:left">新生代中Survivor space中S0当前容量的大小（KB）</td>
-</tr>
-<tr>
-<td>S1C</td>
-<td style="text-align:left">新生代中Survivor space中S1当前容量的大小（KB）</td>
-</tr>
-<tr>
-<td>S0U</td>
-<td style="text-align:left">新生代中Survivor space中S0容量使用的大小（KB）</td>
-</tr>
-<tr>
-<td>S1U</td>
-<td style="text-align:left">新生代中Survivor space中S1容量使用的大小（KB）</td>
-</tr>
-<tr>
-<td>EC</td>
-<td style="text-align:left">Eden space当前容量的大小（KB）</td>
-</tr>
-<tr>
-<td>EC</td>
-<td style="text-align:left">Eden space容量使用的大小（KB）</td>
-</tr>
-<tr>
-<td>OC</td>
-<td style="text-align:left">Old space当前容量的大小（KB）</td>
-</tr>
-<tr>
-<td>OU</td>
-<td style="text-align:left">Old space使用容量的大小（KB）</td>
-</tr>
-<tr>
-<td>PC</td>
-<td style="text-align:left">Permanent space当前容量的大小（KB）</td>
-</tr>
-<tr>
-<td>PU</td>
-<td style="text-align:left">Permanent space使用容量的大小（KB）</td>
-</tr>
-<tr>
-<td>YGC</td>
-<td style="text-align:left">从应用程序启动到采样时发生 Young GC 的次数</td>
-</tr>
-<tr>
-<td>YGCT</td>
-<td style="text-align:left">从应用程序启动到采样时 Young GC 所用的时间(秒)</td>
-</tr>
-<tr>
-<td>FGC</td>
-<td style="text-align:left">从应用程序启动到采样时发生 Full GC 的次数</td>
-</tr>
-<tr>
-<td>FGCT</td>
-<td style="text-align:left">从应用程序启动到采样时 Full GC 所用的时间(秒)</td>
-</tr>
-<tr>
-<td>GCT</td>
-<td style="text-align:left">T从应用程序启动到采样时用于垃圾回收的总时间(单位秒)，它的值等于YGC+FGC</td>
-</tr>
-</tbody>
-</table>
-<ol start="2">
-<li>jstat -gcutil pid 10s</li>
-</ol>
-<table>
-<thead>
-<tr>
-<th>列名</th>
-<th style="text-align:left">说明</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>S0</td>
-<td style="text-align:left">Heap上的 Survivor space 0 区已使用空间的百分比</td>
-</tr>
-<tr>
-<td>S1</td>
-<td style="text-align:left">Heap上的 Survivor space 1 区已使用空间的百分比</td>
-</tr>
-<tr>
-<td>E</td>
-<td style="text-align:left">Heap上的 Eden space 区已使用空间的百分比</td>
-</tr>
-<tr>
-<td>O</td>
-<td style="text-align:left">Heap上的 Old space 区已使用空间的百分比</td>
-</tr>
-<tr>
-<td>P</td>
-<td style="text-align:left">Perm space 区已使用空间的百分比</td>
-</tr>
-<tr>
-<td>YGC</td>
-<td style="text-align:left">从应用程序启动到采样时发生 Young GC 的次数</td>
-</tr>
-<tr>
-<td>YGCT</td>
-<td style="text-align:left">从应用程序启动到采样时 Young GC 所用的时间(秒)</td>
-</tr>
-<tr>
-<td>FGC</td>
-<td style="text-align:left">从应用程序启动到采样时发生 Full GC 的次数</td>
-</tr>
-<tr>
-<td>FGCT</td>
-<td style="text-align:left">从应用程序启动到采样时 Full GC 所用的时间(秒)</td>
-</tr>
-<tr>
-<td>GCT</td>
-<td style="text-align:left">T从应用程序启动到采样时用于垃圾回收的总时间(单位秒)，它的值等于YGC+FGC</td>
-</tr>
-</tbody>
-</table>
+        <p>##Redis分布式锁-实现方式</p>
+<h4 id="基础实现"><a href="#基础实现" class="headerlink" title="基础实现"></a>基础实现</h4><pre><code>`public boolean lock(String lockName){
+     String lockKey = RedisKey.generate(&quot;redis&quot;, &quot;lock&quot;, lockName);
+     Long setnx = redisService.setnx(lockKey, LOCK_FLAG);
+     if (1 == setnx){
+         return true;
+     }else{
+         return false;
+     }
+ }
 
+
+ public boolean releaseLock(String lockName){
+     String lockKey = RedisKey.generate(&quot;redis&quot;, &quot;lock&quot;, lockName);
+     try {
+         redisService.remove(lockKey);
+     }catch (Exception e){
+         logger.error(&quot;[RedisDistributedLock][releaseLock] 异常！参数: &quot;+lockName+&quot;\n&quot;+e.getMessage(),e);
+         return false;
+     }
+     return true;
+ }`
+</code></pre><p>#####问题1:如果releaseLock失败，就会导致死锁，所以要给锁加上超时时间</p>
+<pre><code>public boolean lock(String lockName,int timeout){
+    String lockKey = RedisKey.generate(&quot;redis&quot;, &quot;lock&quot;, lockName);
+    Long setnx = redisService.setnx(lockKey, LOCK_FLAG);
+    if (1 == setnx){
+        redisService.expire(lockKey,timeout);
+        return true;
+    }else{
+        return false;
+    }
+}
+</code></pre><p>#####问题2：超时问题，锁的时间一般设置比较短，如果业务代码执行时间超过了锁的时间就会出问题，第一个线程没执行完，锁就释放了。第二个线程就会抢到这把锁，等第一个线程执行完成，释放锁，这是第三个线程又会拿到这把锁</p>
+<pre><code>//添加lockId 
+
+public Long lock(String lockName, int timeout) {
+    String lockKey = RedisKey.generate(&quot;redis&quot;, &quot;lock&quot;, lockName);
+
+
+    Long lockId = System.currentTimeMillis() + RandomUtils.nextInt();
+
+    Long setnx = redisService.setnx(lockKey, lockId.toString());
+
+    if (1 == setnx) {
+        redisService.expire(lockKey, timeout);
+        return lockId;
+    } else {
+        return null;
+    }
+}
+
+
+public boolean releaseLock(String lockName, Long lockId) {
+    if (StringUtils.isBlank(lockName) || lockId == null){
+        return false;
+    }
+    String lockKey = RedisKey.generate(&quot;redis&quot;, &quot;lock&quot;, lockName);
+    try {
+        if (lockId.equals(redisService.get(lockKey))){
+            redisService.remove(lockKey);
+        }
+    } catch (Exception e) {
+        logger.error(&quot;[RedisDistributedLock][releaseLock] 异常！参数: &quot; + lockName + &quot;\n&quot; + e.getMessage(), e);
+        return false;
+    }
+    return true;
+
+}
+</code></pre><p>#####问题3：如果setnx，expire 一起执行时没有问题的。但是如果一个执行了一个没执行，还是会死锁。</p>
+<pre><code>JedisCluster jedis = redisService.getJedis();
+
+String lockKey = RedisKey.generate(&quot;redis&quot;, &quot;lock&quot;, lockName);
+
+Long lockId = System.currentTimeMillis() + RandomUtils.nextInt();
+
+long end = System.currentTimeMillis() + acquireTimeout;
+while (System.currentTimeMillis() &lt; end) {
+
+    String result = jedis.set(lockKey, lockId.toString(), SET_IF_NOT_EXIST, SET_WITH_EXPIRE_TIME, timeout);
+
+    if (LOCK_OK.equals(result)) {
+        return lockId;
+    }
+
+    TimeUnit.SECONDS.sleep(200);
+
+
+}
+return null;
+</code></pre><p>#####问题4：释放锁失败，重试问题。</p>
+<pre><code>if (StringUtils.isBlank(lockName) || lockId == null) {
+    return false;
+}
+boolean releaseFlag = false;
+
+JedisCluster jedis = redisService.getJedis();
+
+String lockKey = RedisKey.generate(&quot;redis&quot;, &quot;lock&quot;, lockName);
+
+while (true) {
+    try {
+        // 判断是不是可以释放锁
+        if (lockId.equals(jedis.get(lockKey))) {
+            Long del = jedis.del(lockKey);
+            if (del == 1) {
+                releaseFlag = true;
+                break;
+            }
+            TimeUnit.MILLISECONDS.sleep(200);
+            continue;
+        }
+        break;
+    } catch (Exception e) {
+        //删除锁失败或者
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e1) {
+            Thread.currentThread().interrupt();
+        }
+        //长时间抛这个异常，需要人工介入。。
+        logger.error(&quot;[RedisDistributedLock][releaseLock] 异常！参数: &quot; + lockName + &quot;\n&quot; + e.getMessage(), e);
+    }
+}
+
+return releaseFlag;
+</code></pre><p>#####问题5：Timeout时间</p>
+<p>#####问题6：释放锁的非原子操作</p>
+<pre><code> public static boolean releaseLock(String lockName, String lockId) {
+    if (StringUtils.isBlank(lockName) || lockId == null) {
+        return false;
+    }
+    boolean releaseFlag = false;
+
+    String lockKey = RedisKey.generate(&quot;redis&quot;, &quot;lock&quot;, lockName);
+
+    Jedis jedis = null;
+    while (true) {
+        try {
+            jedis = JedisUtil.getJedis(lockKey);
+            jedis.watch(lockKey);
+            // 判断是不是可以释放锁
+            if (lockId.equals(jedis.get(lockKey))) {
+                Transaction transaction = jedis.multi();
+                Response&lt;Long&gt; del = transaction.del(lockKey);
+                transaction.exec();
+                if (del.get() != 1) {
+                    TimeUnit.MILLISECONDS.sleep(200);
+                    continue;
+                }
+                releaseFlag = true;
+            }
+            jedis.unwatch();
+            break;
+        } catch (Exception e) {
+            //删除锁失败或者
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e1) {
+                Thread.currentThread().interrupt();
+            }
+            //长时间抛这个异常，需要人工介入。。
+            logger.error(&quot;[RedisDistributedLock][releaseLock] 异常！参数: &quot; + lockName + &quot;\n&quot; + e.getMessage(), e);
+        }finally {
+            if (jedis != null){
+                jedis.close();
+            }
+        }
+    }
+    return releaseFlag;
+}
+</code></pre><h4 id="最简单实现-lua-脚本-待续…"><a href="#最简单实现-lua-脚本-待续…" class="headerlink" title="最简单实现: lua 脚本 待续…"></a>最简单实现: lua 脚本 待续…</h4>
       
     </div>
 
@@ -591,7 +601,7 @@
       
         <div class="post-tags">
           
-            <a href="/page/tags/优化/" rel="tag"># 优化</a>
+            <a href="/page/tags/redis/" rel="tag"># redis</a>
           
         </div>
       
@@ -604,15 +614,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/page/2019/03/27/DelayQueue/" rel="next" title="DelayQueue">
+                <i class="fa fa-chevron-left"></i> DelayQueue
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/page/2019/03/19/rabbitmq-install/" rel="prev" title="RabbitMQ 单点/集群 安装配置">
-                RabbitMQ 单点/集群 安装配置 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -757,7 +767,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#gc-调整方式"><span class="nav-number">1.</span> <span class="nav-text">gc 调整方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gc-日志查询"><span class="nav-number">2.</span> <span class="nav-text">gc 日志查询</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#基础实现"><span class="nav-number">1.</span> <span class="nav-text">基础实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#最简单实现-lua-脚本-待续…"><span class="nav-number">2.</span> <span class="nav-text">最简单实现: lua 脚本 待续…</span></a></li></ol></div>
             
 
           </div>
