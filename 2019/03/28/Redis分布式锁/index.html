@@ -98,18 +98,18 @@
 
 
 
-  <meta name="description" content="Redis分布式锁-实现方式基础实现`public boolean lock(String lockName){      String lockKey = RedisKey.generate(&amp;quot;redis&amp;quot;, &amp;quot;lock&amp;quot;, lockName);      Long setnx = redisService.setnx(lockKey, LOCK_FLAG">
+  <meta name="description" content="Redis分布式锁-实现方式基础实现123456789`public boolean lock(String lockName)&amp;#123;     String lockKey = RedisKey.generate(&quot;redis&quot;, &quot;lock&quot;, lockName);     Long setnx = redisService.setnx(lockKey, LOCK_FLAG);     i">
 <meta name="keywords" content="redis">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redis分布式锁">
 <meta property="og:url" content="http://sonxy.com/2019/03/28/Redis分布式锁/index.html">
 <meta property="og:site_name" content="w&#39;s blog">
-<meta property="og:description" content="Redis分布式锁-实现方式基础实现`public boolean lock(String lockName){      String lockKey = RedisKey.generate(&amp;quot;redis&amp;quot;, &amp;quot;lock&amp;quot;, lockName);      Long setnx = redisService.setnx(lockKey, LOCK_FLAG">
+<meta property="og:description" content="Redis分布式锁-实现方式基础实现123456789`public boolean lock(String lockName)&amp;#123;     String lockKey = RedisKey.generate(&quot;redis&quot;, &quot;lock&quot;, lockName);     Long setnx = redisService.setnx(lockKey, LOCK_FLAG);     i">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-03-28T05:56:29.825Z">
+<meta property="og:updated_time" content="2019-03-28T06:01:53.192Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis分布式锁">
-<meta name="twitter:description" content="Redis分布式锁-实现方式基础实现`public boolean lock(String lockName){      String lockKey = RedisKey.generate(&amp;quot;redis&amp;quot;, &amp;quot;lock&amp;quot;, lockName);      Long setnx = redisService.setnx(lockKey, LOCK_FLAG">
+<meta name="twitter:description" content="Redis分布式锁-实现方式基础实现123456789`public boolean lock(String lockName)&amp;#123;     String lockKey = RedisKey.generate(&quot;redis&quot;, &quot;lock&quot;, lockName);     Long setnx = redisService.setnx(lockKey, LOCK_FLAG);     i">
 
 
 
@@ -368,7 +368,7 @@
                 
               
 
-              <time title="Created: 2019-03-28 13:48:30 / Modified: 13:56:29" itemprop="dateCreated datePublished" datetime="2019-03-28T13:48:30+08:00">2019-03-28</time>
+              <time title="Created: 2019-03-28 13:48:30 / Modified: 14:01:53" itemprop="dateCreated datePublished" datetime="2019-03-28T13:48:30+08:00">2019-03-28</time>
             
 
             
@@ -407,171 +407,16 @@
       
 
       
-        <h2 id="Redis分布式锁-实现方式"><a href="#Redis分布式锁-实现方式" class="headerlink" title="Redis分布式锁-实现方式"></a>Redis分布式锁-实现方式</h2><h3 id="基础实现"><a href="#基础实现" class="headerlink" title="基础实现"></a>基础实现</h3><pre><code>`public boolean lock(String lockName){
-     String lockKey = RedisKey.generate(&quot;redis&quot;, &quot;lock&quot;, lockName);
-     Long setnx = redisService.setnx(lockKey, LOCK_FLAG);
-     if (1 == setnx){
-         return true;
-     }else{
-         return false;
-     }
- }
-
-
- public boolean releaseLock(String lockName){
-     String lockKey = RedisKey.generate(&quot;redis&quot;, &quot;lock&quot;, lockName);
-     try {
-         redisService.remove(lockKey);
-     }catch (Exception e){
-         logger.error(&quot;[RedisDistributedLock][releaseLock] 异常！参数: &quot;+lockName+&quot;\n&quot;+e.getMessage(),e);
-         return false;
-     }
-     return true;
- }`
-</code></pre><h3 id="问题1-如果releaseLock失败，就会导致死锁，所以要给锁加上超时时间"><a href="#问题1-如果releaseLock失败，就会导致死锁，所以要给锁加上超时时间" class="headerlink" title="问题1:如果releaseLock失败，就会导致死锁，所以要给锁加上超时时间"></a>问题1:如果releaseLock失败，就会导致死锁，所以要给锁加上超时时间</h3><pre><code>public boolean lock(String lockName,int timeout){
-    String lockKey = RedisKey.generate(&quot;redis&quot;, &quot;lock&quot;, lockName);
-    Long setnx = redisService.setnx(lockKey, LOCK_FLAG);
-    if (1 == setnx){
-        redisService.expire(lockKey,timeout);
-        return true;
-    }else{
-        return false;
-    }
-}
-</code></pre><h5 id="问题2：超时问题，锁的时间一般设置比较短，如果业务代码执行时间超过了锁的时间就会出问题，第一个线程没执行完，锁就释放了。第二个线程就会抢到这把锁，等第一个线程执行完成，释放锁，这是第三个线程又会拿到这把锁"><a href="#问题2：超时问题，锁的时间一般设置比较短，如果业务代码执行时间超过了锁的时间就会出问题，第一个线程没执行完，锁就释放了。第二个线程就会抢到这把锁，等第一个线程执行完成，释放锁，这是第三个线程又会拿到这把锁" class="headerlink" title="问题2：超时问题，锁的时间一般设置比较短，如果业务代码执行时间超过了锁的时间就会出问题，第一个线程没执行完，锁就释放了。第二个线程就会抢到这把锁，等第一个线程执行完成，释放锁，这是第三个线程又会拿到这把锁"></a>问题2：超时问题，锁的时间一般设置比较短，如果业务代码执行时间超过了锁的时间就会出问题，第一个线程没执行完，锁就释放了。第二个线程就会抢到这把锁，等第一个线程执行完成，释放锁，这是第三个线程又会拿到这把锁</h5><pre><code>//添加lockId 
-
-public Long lock(String lockName, int timeout) {
-    String lockKey = RedisKey.generate(&quot;redis&quot;, &quot;lock&quot;, lockName);
-
-
-    Long lockId = System.currentTimeMillis() + RandomUtils.nextInt();
-
-    Long setnx = redisService.setnx(lockKey, lockId.toString());
-
-    if (1 == setnx) {
-        redisService.expire(lockKey, timeout);
-        return lockId;
-    } else {
-        return null;
-    }
-}
-
-
-public boolean releaseLock(String lockName, Long lockId) {
-    if (StringUtils.isBlank(lockName) || lockId == null){
-        return false;
-    }
-    String lockKey = RedisKey.generate(&quot;redis&quot;, &quot;lock&quot;, lockName);
-    try {
-        if (lockId.equals(redisService.get(lockKey))){
-            redisService.remove(lockKey);
-        }
-    } catch (Exception e) {
-        logger.error(&quot;[RedisDistributedLock][releaseLock] 异常！参数: &quot; + lockName + &quot;\n&quot; + e.getMessage(), e);
-        return false;
-    }
-    return true;
-
-}
-</code></pre><h3 id="问题3：如果setnx，expire-一起执行时没有问题的。但是如果一个执行了一个没执行，还是会死锁。"><a href="#问题3：如果setnx，expire-一起执行时没有问题的。但是如果一个执行了一个没执行，还是会死锁。" class="headerlink" title="问题3：如果setnx，expire 一起执行时没有问题的。但是如果一个执行了一个没执行，还是会死锁。"></a>问题3：如果setnx，expire 一起执行时没有问题的。但是如果一个执行了一个没执行，还是会死锁。</h3><pre><code>JedisCluster jedis = redisService.getJedis();
-
-String lockKey = RedisKey.generate(&quot;redis&quot;, &quot;lock&quot;, lockName);
-
-Long lockId = System.currentTimeMillis() + RandomUtils.nextInt();
-
-long end = System.currentTimeMillis() + acquireTimeout;
-while (System.currentTimeMillis() &lt; end) {
-
-    String result = jedis.set(lockKey, lockId.toString(), SET_IF_NOT_EXIST, SET_WITH_EXPIRE_TIME, timeout);
-
-    if (LOCK_OK.equals(result)) {
-        return lockId;
-    }
-
-    TimeUnit.SECONDS.sleep(200);
-
-
-}
-return null;
-</code></pre><h3 id="问题4：释放锁失败，重试问题。"><a href="#问题4：释放锁失败，重试问题。" class="headerlink" title="问题4：释放锁失败，重试问题。"></a>问题4：释放锁失败，重试问题。</h3><pre><code>if (StringUtils.isBlank(lockName) || lockId == null) {
-    return false;
-}
-boolean releaseFlag = false;
-
-JedisCluster jedis = redisService.getJedis();
-
-String lockKey = RedisKey.generate(&quot;redis&quot;, &quot;lock&quot;, lockName);
-
-while (true) {
-    try {
-        // 判断是不是可以释放锁
-        if (lockId.equals(jedis.get(lockKey))) {
-            Long del = jedis.del(lockKey);
-            if (del == 1) {
-                releaseFlag = true;
-                break;
-            }
-            TimeUnit.MILLISECONDS.sleep(200);
-            continue;
-        }
-        break;
-    } catch (Exception e) {
-        //删除锁失败或者
-        try {
-            TimeUnit.SECONDS.sleep(1);
-        } catch (InterruptedException e1) {
-            Thread.currentThread().interrupt();
-        }
-        //长时间抛这个异常，需要人工介入。。
-        logger.error(&quot;[RedisDistributedLock][releaseLock] 异常！参数: &quot; + lockName + &quot;\n&quot; + e.getMessage(), e);
-    }
-}
-
-return releaseFlag;
-</code></pre><h3 id="问题5：Timeout时间"><a href="#问题5：Timeout时间" class="headerlink" title="问题5：Timeout时间"></a>问题5：Timeout时间</h3><h3 id="问题6：释放锁的非原子操作"><a href="#问题6：释放锁的非原子操作" class="headerlink" title="问题6：释放锁的非原子操作"></a>问题6：释放锁的非原子操作</h3><pre><code> public static boolean releaseLock(String lockName, String lockId) {
-    if (StringUtils.isBlank(lockName) || lockId == null) {
-        return false;
-    }
-    boolean releaseFlag = false;
-
-    String lockKey = RedisKey.generate(&quot;redis&quot;, &quot;lock&quot;, lockName);
-
-    Jedis jedis = null;
-    while (true) {
-        try {
-            jedis = JedisUtil.getJedis(lockKey);
-            jedis.watch(lockKey);
-            // 判断是不是可以释放锁
-            if (lockId.equals(jedis.get(lockKey))) {
-                Transaction transaction = jedis.multi();
-                Response&lt;Long&gt; del = transaction.del(lockKey);
-                transaction.exec();
-                if (del.get() != 1) {
-                    TimeUnit.MILLISECONDS.sleep(200);
-                    continue;
-                }
-                releaseFlag = true;
-            }
-            jedis.unwatch();
-            break;
-        } catch (Exception e) {
-            //删除锁失败或者
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e1) {
-                Thread.currentThread().interrupt();
-            }
-            //长时间抛这个异常，需要人工介入。。
-            logger.error(&quot;[RedisDistributedLock][releaseLock] 异常！参数: &quot; + lockName + &quot;\n&quot; + e.getMessage(), e);
-        }finally {
-            if (jedis != null){
-                jedis.close();
-            }
-        }
-    }
-    return releaseFlag;
-}
-</code></pre><h3 id="最简单实现-lua-脚本-待续…"><a href="#最简单实现-lua-脚本-待续…" class="headerlink" title="最简单实现: lua 脚本 待续…"></a>最简单实现: lua 脚本 待续…</h3>
+        <h2 id="Redis分布式锁-实现方式"><a href="#Redis分布式锁-实现方式" class="headerlink" title="Redis分布式锁-实现方式"></a>Redis分布式锁-实现方式</h2><h3 id="基础实现"><a href="#基础实现" class="headerlink" title="基础实现"></a>基础实现</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">`<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">lock</span><span class="params">(String lockName)</span></span>&#123;</span><br><span class="line">     String lockKey = RedisKey.generate(<span class="string">"redis"</span>, <span class="string">"lock"</span>, lockName);</span><br><span class="line">     Long setnx = redisService.setnx(lockKey, LOCK_FLAG);</span><br><span class="line">     <span class="keyword">if</span> (<span class="number">1</span> == setnx)&#123;</span><br><span class="line">         <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">     &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">         <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">releaseLock</span><span class="params">(String lockName)</span></span>&#123;</span><br><span class="line">    String lockKey = RedisKey.generate(<span class="string">"redis"</span>, <span class="string">"lock"</span>, lockName);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        redisService.remove(lockKey);</span><br><span class="line">    &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">        logger.error(<span class="string">"[RedisDistributedLock][releaseLock] 异常！参数: "</span>+lockName+<span class="string">"\n"</span>+e.getMessage(),e);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;`</span><br></pre></td></tr></table></figure>
+<h3 id="问题1-如果releaseLock失败，就会导致死锁，所以要给锁加上超时时间"><a href="#问题1-如果releaseLock失败，就会导致死锁，所以要给锁加上超时时间" class="headerlink" title="问题1:如果releaseLock失败，就会导致死锁，所以要给锁加上超时时间"></a>问题1:如果releaseLock失败，就会导致死锁，所以要给锁加上超时时间</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">lock</span><span class="params">(String lockName,<span class="keyword">int</span> timeout)</span></span>&#123;</span><br><span class="line">    String lockKey = RedisKey.generate(<span class="string">"redis"</span>, <span class="string">"lock"</span>, lockName);</span><br><span class="line">    Long setnx = redisService.setnx(lockKey, LOCK_FLAG);</span><br><span class="line">    <span class="keyword">if</span> (<span class="number">1</span> == setnx)&#123;</span><br><span class="line">        redisService.expire(lockKey,timeout);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="问题2：超时问题，锁的时间一般设置比较短，如果业务代码执行时间超过了锁的时间就会出问题，第一个线程没执行完，锁就释放了。第二个线程就会抢到这把锁，等第一个线程执行完成，释放锁，这是第三个线程又会拿到这把锁"><a href="#问题2：超时问题，锁的时间一般设置比较短，如果业务代码执行时间超过了锁的时间就会出问题，第一个线程没执行完，锁就释放了。第二个线程就会抢到这把锁，等第一个线程执行完成，释放锁，这是第三个线程又会拿到这把锁" class="headerlink" title="问题2：超时问题，锁的时间一般设置比较短，如果业务代码执行时间超过了锁的时间就会出问题，第一个线程没执行完，锁就释放了。第二个线程就会抢到这把锁，等第一个线程执行完成，释放锁，这是第三个线程又会拿到这把锁"></a>问题2：超时问题，锁的时间一般设置比较短，如果业务代码执行时间超过了锁的时间就会出问题，第一个线程没执行完，锁就释放了。第二个线程就会抢到这把锁，等第一个线程执行完成，释放锁，这是第三个线程又会拿到这把锁</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">  <span class="comment">//添加lockId </span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> Long <span class="title">lock</span><span class="params">(String lockName, <span class="keyword">int</span> timeout)</span> </span>&#123;</span><br><span class="line">    String lockKey = RedisKey.generate(<span class="string">"redis"</span>, <span class="string">"lock"</span>, lockName);  </span><br><span class="line">	  Long lockId = System.currentTimeMillis() + RandomUtils.nextInt();</span><br><span class="line"></span><br><span class="line">    Long setnx = redisService.setnx(lockKey, lockId.toString());</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="number">1</span> == setnx) &#123;</span><br><span class="line">        redisService.expire(lockKey, timeout);</span><br><span class="line">        <span class="keyword">return</span> lockId;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">releaseLock</span><span class="params">(String lockName, Long lockId)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (StringUtils.isBlank(lockName) || lockId == <span class="keyword">null</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    String lockKey = RedisKey.generate(<span class="string">"redis"</span>, <span class="string">"lock"</span>, lockName);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (lockId.equals(redisService.get(lockKey)))&#123;</span><br><span class="line">            redisService.remove(lockKey);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        logger.error(<span class="string">"[RedisDistributedLock][releaseLock] 异常！参数: "</span> + lockName + <span class="string">"\n"</span> + e.getMessage(), e);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>​    </p>
+<h3 id="问题3：如果setnx，expire-一起执行时没有问题的。但是如果一个执行了一个没执行，还是会死锁。"><a href="#问题3：如果setnx，expire-一起执行时没有问题的。但是如果一个执行了一个没执行，还是会死锁。" class="headerlink" title="问题3：如果setnx，expire 一起执行时没有问题的。但是如果一个执行了一个没执行，还是会死锁。"></a>问题3：如果setnx，expire 一起执行时没有问题的。但是如果一个执行了一个没执行，还是会死锁。</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">JedisCluster jedis = redisService.getJedis();</span><br><span class="line"></span><br><span class="line">String lockKey = RedisKey.generate(<span class="string">"redis"</span>, <span class="string">"lock"</span>, lockName);</span><br><span class="line"></span><br><span class="line">Long lockId = System.currentTimeMillis() + RandomUtils.nextInt();</span><br><span class="line"></span><br><span class="line"><span class="keyword">long</span> end = System.currentTimeMillis() + acquireTimeout;</span><br><span class="line"><span class="keyword">while</span> (System.currentTimeMillis() &lt; end) &#123;</span><br><span class="line"></span><br><span class="line">    String result = jedis.set(lockKey, lockId.toString(), SET_IF_NOT_EXIST, SET_WITH_EXPIRE_TIME, timeout);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (LOCK_OK.equals(result)) &#123;</span><br><span class="line">        <span class="keyword">return</span> lockId;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    TimeUnit.SECONDS.sleep(<span class="number">200</span>);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">return</span> <span class="keyword">null</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="问题4：释放锁失败，重试问题。"><a href="#问题4：释放锁失败，重试问题。" class="headerlink" title="问题4：释放锁失败，重试问题。"></a>问题4：释放锁失败，重试问题。</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (StringUtils.isBlank(lockName) || lockId == <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">boolean</span> releaseFlag = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">JedisCluster jedis = redisService.getJedis();</span><br><span class="line"></span><br><span class="line">String lockKey = RedisKey.generate(<span class="string">"redis"</span>, <span class="string">"lock"</span>, lockName);</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 判断是不是可以释放锁</span></span><br><span class="line">        <span class="keyword">if</span> (lockId.equals(jedis.get(lockKey))) &#123;</span><br><span class="line">            Long del = jedis.del(lockKey);</span><br><span class="line">            <span class="keyword">if</span> (del == <span class="number">1</span>) &#123;</span><br><span class="line">                releaseFlag = <span class="keyword">true</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            TimeUnit.MILLISECONDS.sleep(<span class="number">200</span>);</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        <span class="comment">//删除锁失败或者</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            TimeUnit.SECONDS.sleep(<span class="number">1</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e1) &#123;</span><br><span class="line">            Thread.currentThread().interrupt();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//长时间抛这个异常，需要人工介入。。</span></span><br><span class="line">        logger.error(<span class="string">"[RedisDistributedLock][releaseLock] 异常！参数: "</span> + lockName + <span class="string">"\n"</span> + e.getMessage(), e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> releaseFlag;</span><br></pre></td></tr></table></figure>
+<h3 id="问题5：Timeout时间"><a href="#问题5：Timeout时间" class="headerlink" title="问题5：Timeout时间"></a>问题5：Timeout时间</h3><h3 id="问题6：释放锁的非原子操作"><a href="#问题6：释放锁的非原子操作" class="headerlink" title="问题6：释放锁的非原子操作"></a>问题6：释放锁的非原子操作</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">releaseLock</span><span class="params">(String lockName, String lockId)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (StringUtils.isBlank(lockName) || lockId == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">boolean</span> releaseFlag = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">    String lockKey = RedisKey.generate(<span class="string">"redis"</span>, <span class="string">"lock"</span>, lockName);</span><br><span class="line"></span><br><span class="line">    Jedis jedis = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            jedis = JedisUtil.getJedis(lockKey);</span><br><span class="line">            jedis.watch(lockKey);</span><br><span class="line">            <span class="comment">// 判断是不是可以释放锁</span></span><br><span class="line">            <span class="keyword">if</span> (lockId.equals(jedis.get(lockKey))) &#123;</span><br><span class="line">                Transaction transaction = jedis.multi();</span><br><span class="line">                Response&lt;Long&gt; del = transaction.del(lockKey);</span><br><span class="line">                transaction.exec();</span><br><span class="line">                <span class="keyword">if</span> (del.get() != <span class="number">1</span>) &#123;</span><br><span class="line">                    TimeUnit.MILLISECONDS.sleep(<span class="number">200</span>);</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                releaseFlag = <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            jedis.unwatch();</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="comment">//删除锁失败或者</span></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                TimeUnit.SECONDS.sleep(<span class="number">1</span>);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e1) &#123;</span><br><span class="line">                Thread.currentThread().interrupt();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//长时间抛这个异常，需要人工介入。。</span></span><br><span class="line">            logger.error(<span class="string">"[RedisDistributedLock][releaseLock] 异常！参数: "</span> + lockName + <span class="string">"\n"</span> + e.getMessage(), e);</span><br><span class="line">        &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (jedis != <span class="keyword">null</span>)&#123;</span><br><span class="line">                jedis.close();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> releaseFlag;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="最简单实现-lua-脚本-待续…"><a href="#最简单实现-lua-脚本-待续…" class="headerlink" title="最简单实现: lua 脚本 待续…"></a>最简单实现: lua 脚本 待续…</h3>
       
     </div>
 
@@ -760,7 +605,7 @@ return releaseFlag;
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis分布式锁-实现方式"><span class="nav-number">1.</span> <span class="nav-text">Redis分布式锁-实现方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基础实现"><span class="nav-number">1.1.</span> <span class="nav-text">基础实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题1-如果releaseLock失败，就会导致死锁，所以要给锁加上超时时间"><span class="nav-number">1.2.</span> <span class="nav-text">问题1:如果releaseLock失败，就会导致死锁，所以要给锁加上超时时间</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#问题2：超时问题，锁的时间一般设置比较短，如果业务代码执行时间超过了锁的时间就会出问题，第一个线程没执行完，锁就释放了。第二个线程就会抢到这把锁，等第一个线程执行完成，释放锁，这是第三个线程又会拿到这把锁"><span class="nav-number">1.2.0.1.</span> <span class="nav-text">问题2：超时问题，锁的时间一般设置比较短，如果业务代码执行时间超过了锁的时间就会出问题，第一个线程没执行完，锁就释放了。第二个线程就会抢到这把锁，等第一个线程执行完成，释放锁，这是第三个线程又会拿到这把锁</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题3：如果setnx，expire-一起执行时没有问题的。但是如果一个执行了一个没执行，还是会死锁。"><span class="nav-number">1.3.</span> <span class="nav-text">问题3：如果setnx，expire 一起执行时没有问题的。但是如果一个执行了一个没执行，还是会死锁。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题4：释放锁失败，重试问题。"><span class="nav-number">1.4.</span> <span class="nav-text">问题4：释放锁失败，重试问题。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题5：Timeout时间"><span class="nav-number">1.5.</span> <span class="nav-text">问题5：Timeout时间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题6：释放锁的非原子操作"><span class="nav-number">1.6.</span> <span class="nav-text">问题6：释放锁的非原子操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最简单实现-lua-脚本-待续…"><span class="nav-number">1.7.</span> <span class="nav-text">最简单实现: lua 脚本 待续…</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis分布式锁-实现方式"><span class="nav-number">1.</span> <span class="nav-text">Redis分布式锁-实现方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基础实现"><span class="nav-number">1.1.</span> <span class="nav-text">基础实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题1-如果releaseLock失败，就会导致死锁，所以要给锁加上超时时间"><span class="nav-number">1.2.</span> <span class="nav-text">问题1:如果releaseLock失败，就会导致死锁，所以要给锁加上超时时间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题2：超时问题，锁的时间一般设置比较短，如果业务代码执行时间超过了锁的时间就会出问题，第一个线程没执行完，锁就释放了。第二个线程就会抢到这把锁，等第一个线程执行完成，释放锁，这是第三个线程又会拿到这把锁"><span class="nav-number">1.3.</span> <span class="nav-text">问题2：超时问题，锁的时间一般设置比较短，如果业务代码执行时间超过了锁的时间就会出问题，第一个线程没执行完，锁就释放了。第二个线程就会抢到这把锁，等第一个线程执行完成，释放锁，这是第三个线程又会拿到这把锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题3：如果setnx，expire-一起执行时没有问题的。但是如果一个执行了一个没执行，还是会死锁。"><span class="nav-number">1.4.</span> <span class="nav-text">问题3：如果setnx，expire 一起执行时没有问题的。但是如果一个执行了一个没执行，还是会死锁。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题4：释放锁失败，重试问题。"><span class="nav-number">1.5.</span> <span class="nav-text">问题4：释放锁失败，重试问题。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题5：Timeout时间"><span class="nav-number">1.6.</span> <span class="nav-text">问题5：Timeout时间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题6：释放锁的非原子操作"><span class="nav-number">1.7.</span> <span class="nav-text">问题6：释放锁的非原子操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最简单实现-lua-脚本-待续…"><span class="nav-number">1.8.</span> <span class="nav-text">最简单实现: lua 脚本 待续…</span></a></li></ol></li></ol></div>
             
 
           </div>
