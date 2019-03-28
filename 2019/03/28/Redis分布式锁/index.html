@@ -98,18 +98,18 @@
 
 
 
-  <meta name="description" content="##Redis分布式锁-实现方式 基础实现`public boolean lock(String lockName){      String lockKey = RedisKey.generate(&amp;quot;redis&amp;quot;, &amp;quot;lock&amp;quot;, lockName);      Long setnx = redisService.setnx(lockKey, LOCK_F">
+  <meta name="description" content="Redis分布式锁-实现方式基础实现`public boolean lock(String lockName){      String lockKey = RedisKey.generate(&amp;quot;redis&amp;quot;, &amp;quot;lock&amp;quot;, lockName);      Long setnx = redisService.setnx(lockKey, LOCK_FLAG">
 <meta name="keywords" content="redis">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redis分布式锁">
 <meta property="og:url" content="http://sonxy.com/2019/03/28/Redis分布式锁/index.html">
 <meta property="og:site_name" content="w&#39;s blog">
-<meta property="og:description" content="##Redis分布式锁-实现方式 基础实现`public boolean lock(String lockName){      String lockKey = RedisKey.generate(&amp;quot;redis&amp;quot;, &amp;quot;lock&amp;quot;, lockName);      Long setnx = redisService.setnx(lockKey, LOCK_F">
+<meta property="og:description" content="Redis分布式锁-实现方式基础实现`public boolean lock(String lockName){      String lockKey = RedisKey.generate(&amp;quot;redis&amp;quot;, &amp;quot;lock&amp;quot;, lockName);      Long setnx = redisService.setnx(lockKey, LOCK_FLAG">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-03-28T05:51:36.207Z">
+<meta property="og:updated_time" content="2019-03-28T05:56:29.825Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis分布式锁">
-<meta name="twitter:description" content="##Redis分布式锁-实现方式 基础实现`public boolean lock(String lockName){      String lockKey = RedisKey.generate(&amp;quot;redis&amp;quot;, &amp;quot;lock&amp;quot;, lockName);      Long setnx = redisService.setnx(lockKey, LOCK_F">
+<meta name="twitter:description" content="Redis分布式锁-实现方式基础实现`public boolean lock(String lockName){      String lockKey = RedisKey.generate(&amp;quot;redis&amp;quot;, &amp;quot;lock&amp;quot;, lockName);      Long setnx = redisService.setnx(lockKey, LOCK_FLAG">
 
 
 
@@ -368,7 +368,7 @@
                 
               
 
-              <time title="Created: 2019-03-28 13:48:30 / Modified: 13:51:36" itemprop="dateCreated datePublished" datetime="2019-03-28T13:48:30+08:00">2019-03-28</time>
+              <time title="Created: 2019-03-28 13:48:30 / Modified: 13:56:29" itemprop="dateCreated datePublished" datetime="2019-03-28T13:48:30+08:00">2019-03-28</time>
             
 
             
@@ -407,8 +407,7 @@
       
 
       
-        <p>##Redis分布式锁-实现方式</p>
-<h4 id="基础实现"><a href="#基础实现" class="headerlink" title="基础实现"></a>基础实现</h4><pre><code>`public boolean lock(String lockName){
+        <h2 id="Redis分布式锁-实现方式"><a href="#Redis分布式锁-实现方式" class="headerlink" title="Redis分布式锁-实现方式"></a>Redis分布式锁-实现方式</h2><h3 id="基础实现"><a href="#基础实现" class="headerlink" title="基础实现"></a>基础实现</h3><pre><code>`public boolean lock(String lockName){
      String lockKey = RedisKey.generate(&quot;redis&quot;, &quot;lock&quot;, lockName);
      Long setnx = redisService.setnx(lockKey, LOCK_FLAG);
      if (1 == setnx){
@@ -429,8 +428,7 @@
      }
      return true;
  }`
-</code></pre><p>#####问题1:如果releaseLock失败，就会导致死锁，所以要给锁加上超时时间</p>
-<pre><code>public boolean lock(String lockName,int timeout){
+</code></pre><h3 id="问题1-如果releaseLock失败，就会导致死锁，所以要给锁加上超时时间"><a href="#问题1-如果releaseLock失败，就会导致死锁，所以要给锁加上超时时间" class="headerlink" title="问题1:如果releaseLock失败，就会导致死锁，所以要给锁加上超时时间"></a>问题1:如果releaseLock失败，就会导致死锁，所以要给锁加上超时时间</h3><pre><code>public boolean lock(String lockName,int timeout){
     String lockKey = RedisKey.generate(&quot;redis&quot;, &quot;lock&quot;, lockName);
     Long setnx = redisService.setnx(lockKey, LOCK_FLAG);
     if (1 == setnx){
@@ -440,8 +438,7 @@
         return false;
     }
 }
-</code></pre><p>#####问题2：超时问题，锁的时间一般设置比较短，如果业务代码执行时间超过了锁的时间就会出问题，第一个线程没执行完，锁就释放了。第二个线程就会抢到这把锁，等第一个线程执行完成，释放锁，这是第三个线程又会拿到这把锁</p>
-<pre><code>//添加lockId 
+</code></pre><h5 id="问题2：超时问题，锁的时间一般设置比较短，如果业务代码执行时间超过了锁的时间就会出问题，第一个线程没执行完，锁就释放了。第二个线程就会抢到这把锁，等第一个线程执行完成，释放锁，这是第三个线程又会拿到这把锁"><a href="#问题2：超时问题，锁的时间一般设置比较短，如果业务代码执行时间超过了锁的时间就会出问题，第一个线程没执行完，锁就释放了。第二个线程就会抢到这把锁，等第一个线程执行完成，释放锁，这是第三个线程又会拿到这把锁" class="headerlink" title="问题2：超时问题，锁的时间一般设置比较短，如果业务代码执行时间超过了锁的时间就会出问题，第一个线程没执行完，锁就释放了。第二个线程就会抢到这把锁，等第一个线程执行完成，释放锁，这是第三个线程又会拿到这把锁"></a>问题2：超时问题，锁的时间一般设置比较短，如果业务代码执行时间超过了锁的时间就会出问题，第一个线程没执行完，锁就释放了。第二个线程就会抢到这把锁，等第一个线程执行完成，释放锁，这是第三个线程又会拿到这把锁</h5><pre><code>//添加lockId 
 
 public Long lock(String lockName, int timeout) {
     String lockKey = RedisKey.generate(&quot;redis&quot;, &quot;lock&quot;, lockName);
@@ -476,8 +473,7 @@ public boolean releaseLock(String lockName, Long lockId) {
     return true;
 
 }
-</code></pre><p>#####问题3：如果setnx，expire 一起执行时没有问题的。但是如果一个执行了一个没执行，还是会死锁。</p>
-<pre><code>JedisCluster jedis = redisService.getJedis();
+</code></pre><h3 id="问题3：如果setnx，expire-一起执行时没有问题的。但是如果一个执行了一个没执行，还是会死锁。"><a href="#问题3：如果setnx，expire-一起执行时没有问题的。但是如果一个执行了一个没执行，还是会死锁。" class="headerlink" title="问题3：如果setnx，expire 一起执行时没有问题的。但是如果一个执行了一个没执行，还是会死锁。"></a>问题3：如果setnx，expire 一起执行时没有问题的。但是如果一个执行了一个没执行，还是会死锁。</h3><pre><code>JedisCluster jedis = redisService.getJedis();
 
 String lockKey = RedisKey.generate(&quot;redis&quot;, &quot;lock&quot;, lockName);
 
@@ -497,8 +493,7 @@ while (System.currentTimeMillis() &lt; end) {
 
 }
 return null;
-</code></pre><p>#####问题4：释放锁失败，重试问题。</p>
-<pre><code>if (StringUtils.isBlank(lockName) || lockId == null) {
+</code></pre><h3 id="问题4：释放锁失败，重试问题。"><a href="#问题4：释放锁失败，重试问题。" class="headerlink" title="问题4：释放锁失败，重试问题。"></a>问题4：释放锁失败，重试问题。</h3><pre><code>if (StringUtils.isBlank(lockName) || lockId == null) {
     return false;
 }
 boolean releaseFlag = false;
@@ -533,9 +528,7 @@ while (true) {
 }
 
 return releaseFlag;
-</code></pre><p>#####问题5：Timeout时间</p>
-<p>#####问题6：释放锁的非原子操作</p>
-<pre><code> public static boolean releaseLock(String lockName, String lockId) {
+</code></pre><h3 id="问题5：Timeout时间"><a href="#问题5：Timeout时间" class="headerlink" title="问题5：Timeout时间"></a>问题5：Timeout时间</h3><h3 id="问题6：释放锁的非原子操作"><a href="#问题6：释放锁的非原子操作" class="headerlink" title="问题6：释放锁的非原子操作"></a>问题6：释放锁的非原子操作</h3><pre><code> public static boolean releaseLock(String lockName, String lockId) {
     if (StringUtils.isBlank(lockName) || lockId == null) {
         return false;
     }
@@ -578,7 +571,7 @@ return releaseFlag;
     }
     return releaseFlag;
 }
-</code></pre><h4 id="最简单实现-lua-脚本-待续…"><a href="#最简单实现-lua-脚本-待续…" class="headerlink" title="最简单实现: lua 脚本 待续…"></a>最简单实现: lua 脚本 待续…</h4>
+</code></pre><h3 id="最简单实现-lua-脚本-待续…"><a href="#最简单实现-lua-脚本-待续…" class="headerlink" title="最简单实现: lua 脚本 待续…"></a>最简单实现: lua 脚本 待续…</h3>
       
     </div>
 
@@ -767,7 +760,7 @@ return releaseFlag;
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#基础实现"><span class="nav-number">1.</span> <span class="nav-text">基础实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#最简单实现-lua-脚本-待续…"><span class="nav-number">2.</span> <span class="nav-text">最简单实现: lua 脚本 待续…</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis分布式锁-实现方式"><span class="nav-number">1.</span> <span class="nav-text">Redis分布式锁-实现方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基础实现"><span class="nav-number">1.1.</span> <span class="nav-text">基础实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题1-如果releaseLock失败，就会导致死锁，所以要给锁加上超时时间"><span class="nav-number">1.2.</span> <span class="nav-text">问题1:如果releaseLock失败，就会导致死锁，所以要给锁加上超时时间</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#问题2：超时问题，锁的时间一般设置比较短，如果业务代码执行时间超过了锁的时间就会出问题，第一个线程没执行完，锁就释放了。第二个线程就会抢到这把锁，等第一个线程执行完成，释放锁，这是第三个线程又会拿到这把锁"><span class="nav-number">1.2.0.1.</span> <span class="nav-text">问题2：超时问题，锁的时间一般设置比较短，如果业务代码执行时间超过了锁的时间就会出问题，第一个线程没执行完，锁就释放了。第二个线程就会抢到这把锁，等第一个线程执行完成，释放锁，这是第三个线程又会拿到这把锁</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题3：如果setnx，expire-一起执行时没有问题的。但是如果一个执行了一个没执行，还是会死锁。"><span class="nav-number">1.3.</span> <span class="nav-text">问题3：如果setnx，expire 一起执行时没有问题的。但是如果一个执行了一个没执行，还是会死锁。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题4：释放锁失败，重试问题。"><span class="nav-number">1.4.</span> <span class="nav-text">问题4：释放锁失败，重试问题。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题5：Timeout时间"><span class="nav-number">1.5.</span> <span class="nav-text">问题5：Timeout时间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题6：释放锁的非原子操作"><span class="nav-number">1.6.</span> <span class="nav-text">问题6：释放锁的非原子操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最简单实现-lua-脚本-待续…"><span class="nav-number">1.7.</span> <span class="nav-text">最简单实现: lua 脚本 待续…</span></a></li></ol></div>
             
 
           </div>
